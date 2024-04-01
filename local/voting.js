@@ -117,9 +117,6 @@ async function handle_interaction(interaction) {
             });
 
             fields["votes"] = []
-            for (let i = 0; i < vc.length; i++) {
-                await client.users.fetch(vc[i]);
-            }
 
             users = users.map((user) => {
                 let id = user.user;
@@ -291,10 +288,6 @@ async function process_vote(interaction) {
     template = template.replace(/{PCT2}/g, pct2);
     template = template.replace(/{PCT3}/g, pct3);
 
-    for (let i = 0; i < vc.length; i++) {
-        await client.users.fetch(vc[i]);
-    }
-
     vc = vc.map((id) => {
         let username = (client.users.cache.get(id)).displayName;
         return escape(username);
@@ -425,10 +418,6 @@ async function voting_pulse() {
         template = template.replace(/{PCT1}/g, pct1);
         template = template.replace(/{PCT2}/g, pct2);
         template = template.replace(/{PCT3}/g, pct3);
-    
-        for (let i = 0; i < vc.length; i++) {
-            await client.users.fetch(vc[i]);
-        }
 
         vc = vc.map((id) => {
             let username = (client.users.cache.get(id));
@@ -572,16 +561,16 @@ async function voting_pulse() {
         } else if (vote.fields.type == "Update Democrobot" && passed) {
             setTimeout(async () => {
                 let time_string = new Date(vote.time + VoteMinTime).toISOString().split(".")[0].replace("T", " ") + " UTC";
-                let channel = client.guilds.cache.get(Server).channels.get(Channels.Announcements)
-                let id = channel.send("Democrobot Update (" + time_string + "):\n  Core files: ❌\n  Dependencies: ❌");
+                let channel = client.guilds.cache.get(Server).channels.cache.get(Channels.Announcements)
+                let msg = await channel.send("Democrobot Update (" + time_string + "):\n  Core files: ❌\n  Dependencies: ❌");
                 let startTime = new Date();
                 await simpleGit().pull();
                 let total_core = (new Date()).getTime() - startTime.getTime();
-                await channel.messages.cache.get(id).edit("Democrobot Update (" + time_string + "):\n  Core files: ✅ ( " + Math.round(total_core / 100) / 10 + "s )\n  Dependencies: ❌")
+                await msg.edit("Democrobot Update (" + time_string + "):\n  Core files: ✅ ( " + Math.round(total_core / 100) / 10 + "s )\n  Dependencies: ❌")
                 startTime = new Date();
                 await exec("npm install");
                 let total_dep = (new Date()).getTime() - startTime.getTime();
-                await channel.messages.cache.get(id).edit("Democrobot Update (" + time_string + "):\n  Core files: ✅ ( " + Math.round(total_core / 100) / 10 + "s )\n  Dependencies: ✅ ( " + Math.round(total_dep / 100) / 10 + "s )")
+                await msg.edit("Democrobot Update (" + time_string + "):\n  Core files: ✅ ( " + Math.round(total_core / 100) / 10 + "s )\n  Dependencies: ✅ ( " + Math.round(total_dep / 100) / 10 + "s )")
                 process.exit(0);
             }, 1000);
         }
