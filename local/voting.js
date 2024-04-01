@@ -582,6 +582,7 @@ async function voting_pulse() {
                 await exec("npm install");
                 let total_dep = (new Date()).getTime() - startTime.getTime();
                 await channel.messages.cache.get(id).edit("Democrobot Update (" + time_string + "):\n  Core files: ✅ ( " + Math.round(total_core / 100) / 10 + "s )\n  Dependencies: ✅ ( " + Math.round(total_dep / 100) / 10 + "s )")
+                process.exit(0);
             }, 1000);
         }
 
