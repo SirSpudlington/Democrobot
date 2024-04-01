@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 124 124" fill="none">
+  <rect width="124" height="124" rx="5" fill="#303030"/>
+  
+  // Structure and metadata
+  <text x="5" y="12.5" style="font: 7.5px sans-serif; fill: white;">{VOTE TITLE}</text>
+  <text x="75" y="12.5" style="font: 4px sans-serif; fill: white;">{VOTE END}</text>
+  <text x="5" y="19" style="font: 4px sans-serif; fill: white;">{VOTE TYPE}</text>
+  <text x="5" y="25" style="font: 3px sans-serif; fill: white;">{DESCRIPTION}</text>
+  
+  // Votes
+  <text x="4.8" y="50" style="font: 4px sans-serif; fill: white;">Votes: </text>
+  <text x="5" y="57" style="font: 3px sans-serif; fill: white;">Community Votes: </text>
+  <text x="5" y="87" style="font: 3px sans-serif; fill: white;">Commitee Votes: </text>
+  
+
+  // Community vote 5-90
+  <line x1="5" y1="60" x2="90" y2="60" stroke-linecap="round" stroke="#202020"/>
+  <line x1="5" y1="67.5" x2="90" y2="67.5" stroke-linecap="round" stroke="#202020"/>
+  <line x1="5" y1="75" x2="90" y2="75" stroke-linecap="round" stroke="#202020"/>
+
+  <text x="93" y="60.7" style="font: 3px sans-serif; fill: white;">{PCT1}% In favour</text>
+  <text x="93" y="68.2" style="font: 3px sans-serif; fill: white;">{PCT2}% Against</text>
+  <text x="93" y="75.7" style="font: 3px sans-serif; fill: white;">{PCT3}% Abstained</text>
+
+  <line x1="5" y1="60" x2="{VOTE_PCT_1}" y2="60" stroke-linecap="round" stroke="#20cc20"/>
+  <line x1="5" y1="67.5" x2="{VOTE_PCT_2}" y2="67.5" stroke-linecap="round" stroke="#ee2020"/>
+  <line x1="5" y1="75" x2="{VOTE_PCT_3}" y2="75" stroke-linecap="round" stroke="#eeee20"/>
+
+  // VC votes 5-90
+
+  <text x="5" y="95" style="font: 4px sans-serif; fill: white;">{USER1}</text>
+  <text x="5" y="102" style="font: 4px sans-serif; fill: white;">{USER2}</text>
+  <text x="5" y="109" style="font: 4px sans-serif; fill: white;">{USER3}</text>
+  <text x="5" y="116" style="font: 4px sans-serif; fill: white;">{USER3}</text>
+
+  <text x="45" y="95" style="font: 4px sans-serif; fill: white;">: {EMOJI1}</text>
+  <text x="45" y="102" style="font: 4px sans-serif; fill: white;">: {EMOJI2}</text>
+  <text x="45" y="109" style="font: 4px sans-serif; fill: white;">: {EMOJI3}</text>
+  <text x="45" y="116" style="font: 4px sans-serif; fill: white;">: {EMOJI4}</text>
+</svg>

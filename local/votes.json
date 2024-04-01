@@ -1,0 +1,43 @@
+[
+    {
+        "name": "Generic",
+        "description": "A vote with no programmatical outcome.",
+        "supermajority": false,
+        "inputs": [{ "name": "Reason", "description": "The reason for the vote.", "required": true, "type": "string" }]
+    },
+    {
+        "name": "Kick",
+        "description": "A vote to kick a user.",
+        "supermajority": true,
+        "inputs": [
+            { "name": "Reason", "description": "The reason for the vote.", "required": true, "type": "string" },
+            { "name": "User", "description": "The user to kick.", "required": true, "type": "user" }
+        ]
+    },
+    {
+        "name": "Ban",
+        "description": "A vote to ban a user.",
+        "supermajority": true,
+        "inputs": [
+            { "name": "Reason", "description": "The reason for the vote.", "required": true, "type": "string" },
+            { "name": "User", "description": "The user to ban.", "required": true, "type": "user" }
+        ]
+    },
+    {
+        "name": "Unban",
+        "description": "A vote to unban a user.",
+        "supermajority": false,
+        "inputs": [
+            { "name": "Reason", "description": "The reason for the vote.", "required": true, "type": "string" },
+            { "name": "User", "description": "The User To Unban", "required": true, "type": "user" }
+        ]
+    },
+    {
+        "name": "Delete Builderman",
+        "description": "Delete the builderman and start true democracy.",
+        "supermajority": true,
+        "inputs": [
+            { "name": "Reason", "description": "The reason for the vote.", "required": true, "type": "string" }
+        ]
+    }
+]
