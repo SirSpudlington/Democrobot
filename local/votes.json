@@ -39,5 +39,13 @@
         "inputs": [
             { "name": "Reason", "description": "The reason for the vote.", "required": true, "type": "string" }
         ]
+    },
+    {
+        "name": "Update Democrobot",
+        "description": "Apply all recent updates to democrobot.",
+        "supermajority": false,
+        "inputs": [
+            { "name": "Reason", "description": "Why the updates are needed.", "required": true, "type": "string" }
+        ]
     }
 ]

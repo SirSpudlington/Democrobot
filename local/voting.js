@@ -5,6 +5,8 @@ const render = require('svg-render');
 const { randomUUID } = require('crypto');
 const { Channels, VoteMinTime, Server } = require('../config.json');
 var escape = require('escape-html');
+const simpleGit = require('simple-git');
+const exec = require('child_process').exec;
 
 var db;
 var client;
@@ -518,8 +520,7 @@ async function voting_pulse() {
                 return
             }
             await sel_member.kick("A vote has kicked you from the server.");
-        }
-        if (vote.fields.type == "Ban" && passed) {
+        } else if (vote.fields.type == "Ban" && passed) {
             let username = vote.fields["User"];
 
             let member = Array.from((await client.guilds.cache.get(Server).members.fetch()).values());
@@ -542,8 +543,7 @@ async function voting_pulse() {
             }
 
             await sel_member.ban({ deleteMessageSeconds: 60 * 60 * 24 * 7, reason: "A vote has banned you from the server. You have been banned for 1 week." });
-        }
-        if (vote.fields.type == "Unban" && passed) {
+        } else if (vote.fields.type == "Unban" && passed) {
             let username = vote.fields["User"];
 
             let member = Array.from((await client.guilds.cache.get(Server).bans.fetch()).values());
@@ -566,16 +566,29 @@ async function voting_pulse() {
             }
 
             await client.guilds.cache.get(Server).members.unban(sel_member)
-        }
-        if (vote.fields.type == "Delete Builderman" && passed) {
+        } else if (vote.fields.type == "Delete Builderman" && passed) {
             let role = await client.guilds.cache.get(Server).roles.fetch(Roles.Builderman)
             await role.delete()
+        } else if (vote.fields.type == "Update Democrobot" && passed) {
+            setTimeout(async () => {
+                let time_string = new Date(vote.time + VoteMinTime).toISOString().split(".")[0].replace("T", " ") + " UTC";
+                let channel = client.guilds.cache.get(Server).channels.get(Channels.Announcements)
+                let id = channel.send("Democrobot Update (" + time_string + "):\n  Core files: ❌\n  Dependencies: ❌");
+                let startTime = new Date();
+                await simpleGit().pull();
+                let total_core = (new Date()).getTime() - startTime.getTime();
+                await channel.messages.cache.get(id).edit("Democrobot Update (" + time_string + "):\n  Core files: ✅ ( " + Math.round(total_core / 100) / 10 + "s )\n  Dependencies: ❌")
+                startTime = new Date();
+                await exec("npm install");
+                let total_dep = (new Date()).getTime() - startTime.getTime();
+                await channel.messages.cache.get(id).edit("Democrobot Update (" + time_string + "):\n  Core files: ✅ ( " + Math.round(total_core / 100) / 10 + "s )\n  Dependencies: ✅ ( " + Math.round(total_dep / 100) / 10 + "s )")
+            }, 1000);
         }
 
         await msg.edit({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png'}], components: [], content: result});
         await db.run("DELETE FROM votes WHERE id = ?", [vote.id]);
 
-        if (vote.fields.type == "Delete Builderman" && passed) {
+        if ((vote.fields.type == "Delete Builderman" && passed)) {
             // exit program
             process.exit(0);
         }
