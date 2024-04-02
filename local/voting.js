@@ -568,7 +568,7 @@ async function voting_pulse() {
                 let total_core = (new Date()).getTime() - startTime.getTime();
                 await msg.edit("Democrobot Update (" + time_string + "):\n  Core files: ✅ ( " + Math.round(total_core / 100) / 10 + "s )\n  Dependencies: ❌")
                 startTime = new Date();
-                await exec("npm install");
+                await exec("bun i");
                 let total_dep = (new Date()).getTime() - startTime.getTime();
                 await msg.edit("Democrobot Update (" + time_string + "):\n  Core files: ✅ ( " + Math.round(total_core / 100) / 10 + "s )\n  Dependencies: ✅ ( " + Math.round(total_dep / 100) / 10 + "s )")
                 process.exit(0);
