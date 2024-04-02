@@ -141,9 +141,9 @@ async function handle_interaction(interaction) {
             for (let i = 0; i < users.length; i++) {
                 let type = "";
                 if (fields["votes"][i] == 0) {
-                    type = "Abstained 🟡"
+                    type = "Abstained"
                 } else if (fields["votes"][i] == 1) {
-                    type = "Pending ⌛"
+                    type = "Pending "
                 }
 
                 template = template.replace(new RegExp("{EMOJI" + (i+1) + "}", 'g'), type);
@@ -302,13 +302,13 @@ async function process_vote(interaction) {
     for (let i = 0; i < vc.length; i++) {
         let type = "";
         if (vote.fields["votes"][i] == 0) {
-            type = "Abstained 🟡"
+            type = "Abstained"
         } else if (vote.fields["votes"][i] == 1) {
-            type = "Pending ⌛"
+            type = "Pending "
         } else if (vote.fields["votes"][i] == 2) {
-            type = "Against ❌"
+            type = "Against "
         } else if (vote.fields["votes"][i] == 3) {
-            type = "For ✅"
+            type = "For"
         }
         template = template.replace(new RegExp("{EMOJI" + (i+1) + "}", 'g'), type);
     }
@@ -436,13 +436,13 @@ async function voting_pulse() {
         for (let i = 0; i < vc.length; i++) {
             let type = "";
             if (vote.fields["votes"][i] == 0) {
-                type = "Abstained 🟡"
+                type = "Abstained"
             } else if (vote.fields["votes"][i] == 1) {
-                type = "Pending ⌛"
+                type = "Pending "
             } else if (vote.fields["votes"][i] == 2) {
-                type = "Against ❌"
+                type = "Against "
             } else if (vote.fields["votes"][i] == 3) {
-                type = "For ✅"
+                type = "For"
             }
             template = template.replace(new RegExp("{EMOJI" + (i+1) + "}", 'g'), type);
         };
