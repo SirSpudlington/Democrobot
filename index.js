@@ -264,13 +264,43 @@ async function roleEvent(event) {
         let validperm = true;
         let validunk = true;
 
-        if (Executive.position != (pos - 4)) {
-            validpos = false
+        let rolesToCheck;
+
+        if (event.id == Roles.Executive) {
+            if (event.position != (pos - 4)) {
+                validpos = false
+            }
+
+            rolesToCheck = BackupRoles.Executive
+        } else if (event.id == Roles.VicePresident) {
+            if (event.position != (pos - 3)) {
+                validpos = false
+            }
+
+            rolesToCheck = BackupRoles.VicePresident
+        } else if (event.id == Roles.President) {
+            if (event.position != (pos - 2)) {
+                validpos = false
+            }
+
+            rolesToCheck = BackupRoles.President
+        } else if (event.id == Roles.VotingCommitee) {
+            if (event.position != (pos - 1)) {
+                validpos = false
+            }
+            rolesToCheck = BackupRoles.VotingCommitee
+        } else if (event.id == Roles.LeadAdmin) {
+            if (event.position != pos) {
+                validpos = false
+            }
+            rolesToCheck = BackupRoles.LeadAdmin
+        } else {
+            return
         }
 
-        for (const [key, value] of Object.entries(BackupRoles.Executive)) {
+        for (const [key, value] of Object.entries(rolesToCheck)) {
             if (key == "permissions") {
-                if (Executive.permissions.bitfield != value) {
+                if (event.permissions.bitfield != value) {
                     validperm = false
                     continue
                 }
@@ -278,96 +308,16 @@ async function roleEvent(event) {
             else if (key == "tags" || key == "reason") {
                 continue
             }
-            else if (Executive[key] != value) {
+            else if (event[key] != value) {
                 validunk = false
                 continue
             }
         }
 
-        for (const [key, value] of Object.entries(BackupRoles.VicePresident)) {
-            if (key == "permissions") {
-                if (VicePresident.permissions.bitfield != value) {
-                    validperm = false
-                    continue
-                }
-            }
-            else if (key == "tags" || key == "reason") {
-                continue
-            }
-            else if (VicePresident[key] != value) {
-                validunk = false
-                continue
-            }
-        }
-
-        if (VicePresident.position != (pos - 3)) {
-            validpos = false
-        }
-
-        for (const [key, value] of Object.entries(BackupRoles.President)) {
-            if (key == "permissions") {
-                if (President.permissions.bitfield != value) {
-                    validperm = false
-                    continue
-                }
-            }
-            else if (key == "tags" || key == "reason") {
-                continue
-            }
-            else if (President[key] != value) {
-                validunk = false
-                continue
-            }
-        }
-
-        if (President.position != (pos - 2)) {
-            validpos = false
-        }
-
-        for (const [key, value] of Object.entries(BackupRoles.VotingCommitee)) {
-            if (key == "permissions") {
-                if (VotingCommitee.permissions.bitfield != value) {
-                    validperm = false
-                    continue
-                }
-            }
-            else if (key == "tags" || key == "reason") {
-                continue
-            }
-            else if (VotingCommitee[key] != value) {
-                validunk = false
-                continue
-            }
-        }
-
-        if (VotingCommitee.position != (pos - 1)) {
-            validpos = false
-        }
-
-        for (const [key, value] of Object.entries(BackupRoles.LeadAdmin)) {
-            if (key == "permissions") {
-                if (LeadAdmin.permissions.bitfield != value) {
-                    validperm = false
-                    continue
-                }
-            }
-            else if (key == "tags" || key == "reason") {
-                continue
-            }
-            else if (LeadAdmin[key] != value) {
-                validunk = false
-                continue
-            }
-        }
-
-        if (LeadAdmin.position != (pos)) {
-            validpos = false
-        }
-
+        console.log(validperm, validunk, validpos)
 
         if (validperm && validunk && validpos) {
             // no critical role alteration made
-            
             return
         }
 
