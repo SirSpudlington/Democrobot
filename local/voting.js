@@ -452,7 +452,8 @@ async function voting_pulse() {
             width: 512
         });
 
-        let msg = Array.from((await client.channels.cache.get(Channels.Votes).messages.fetch(vote.message)).values())[0];
+        await client.channels.cache.get(Channels.Votes).messages.fetch();
+        let msg = await client.channels.cache.get(Channels.Votes).messages.cache.get(vote.id);
 
         let weight_of_vc = Math.ceil(total_votes / 4);
 
