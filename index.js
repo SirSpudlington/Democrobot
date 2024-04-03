@@ -246,19 +246,11 @@ async function roleEvent(event) {
 
         // check if any critical values are modified
 
-        await server.roles.fetch();
-
-        let pos = server.roles.cache.size - 1
+        let pos = (await server.roles.fetch()).size - 1
 
         if (builder_man_exists) {
             pos = pos - 1
         }
-
-        let Executive = server.roles.cache.get(Roles.Executive)
-        let LeadAdmin = server.roles.cache.get(Roles.LeadAdmin)
-        let President = server.roles.cache.get(Roles.President)
-        let VicePresident = server.roles.cache.get(Roles.VicePresident)
-        let VotingCommitee = server.roles.cache.get(Roles.VotingCommitee)
 
         let validpos = true;
         let validperm = true;
@@ -309,6 +301,7 @@ async function roleEvent(event) {
                 continue
             }
             else if (event[key] != value) {
+                console.log(key, value)
                 validunk = false
                 continue
             }
