@@ -291,17 +291,17 @@ async function roleEvent(event) {
         }
 
         for (const [key, value] of Object.entries(rolesToCheck)) {
+            console.log(key, value)
             if (key == "permissions") {
                 if (event.permissions.bitfield != value) {
                     validperm = false
                     continue
                 }
             }
-            else if (key == "tags" || key == "reason") {
+            else if (key == "tags" || key == "reason" || key == "position") {
                 continue
             }
             else if (event[key] != value) {
-                console.log(key, value)
                 validunk = false
                 continue
             }
