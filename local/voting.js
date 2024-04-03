@@ -476,15 +476,15 @@ async function voting_pulse() {
 
         let passed = false;
 
-        if (vote.fields.supermajority && majority > 0.66) {
+        if (vote.fields.supermajority && majority >= 0.66) {
             result += "Supermajority vote passed. ";
             passed = true;
         } else if (vote.fields.supermajority) {
             result += "Supermajority vote failed. ";
-        } else if (majority > 0.5) {
+        } else if (majority >= 0.5) {
             passed = true;
             result += "Vote passed. ";
-        } else if (majority < 0.5) {
+        } else if (majority <= 0.5) {
             result += "Vote failed. ";
         }
 
