@@ -313,6 +313,8 @@ async function process_vote(interaction) {
         template = template.replace(new RegExp("{EMOJI" + (i+1) + "}", 'g'), type);
     }
 
+    console.log(template);
+
     const outputBuffer = await render({
         buffer: Buffer.from(template, "utf-8"),
         width: 512
