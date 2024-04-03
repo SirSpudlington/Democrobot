@@ -349,13 +349,13 @@ async function roleEvent(event) {
             validpos = false
         }
 
+        console.log(validperm, validunk, validpos)
+
         if (validperm && validunk && validpos) {
             // no critical role alteration made
-            console.log(validperm, validunk, validpos)
+            
             return
         }
-
-        // Name and shame
 
         // Name and shame
 
