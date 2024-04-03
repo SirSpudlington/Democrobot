@@ -251,7 +251,6 @@ async function roleEvent(event) {
         let pos = total_roles.size - 1
 
         let newest_role = total_roles.find(x => x.id == event.id);
-        console.log(newest_role)
 
         if (builder_man_exists) {
             pos = pos - 1
@@ -311,7 +310,8 @@ async function roleEvent(event) {
             }
         }
 
-        console.log(validperm, validunk, validpos)
+        console.log(validpos, validperm, validunk, event.name)
+
 
         if (validperm && validunk && validpos) {
             // no critical role alteration made
