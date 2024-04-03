@@ -262,84 +262,89 @@ async function roleEvent(event) {
 
         let valid = true;
 
+        if (Executive.position != (pos - 4)) {
+            valid = false
+        }
+
         for (const [key, value] of Object.entries(BackupRoles.Executive)) {
-            if (key == "position") {
-                if (Executive.position != (pos - 4)) {
-                    valid = false
-                }
-            }
-            else if (key == "permissions") {
+            if (key == "permissions") {
                 if (Executive.permissions.bitfield != value) {
                     valid = false
+                    continue
                 }
             }
             else if (Executive[key] != value) {
                 valid = false
+                continue
             }
         }
 
         for (const [key, value] of Object.entries(BackupRoles.VicePresident)) {
-            if (key == "position") {
-                if (VicePresident.position != (pos - 3)) {
-                    valid = false
-                }
-            }
-            else if (key == "permissions") {
+            if (key == "permissions") {
                 if (VicePresident.permissions.bitfield != value) {
                     valid = false
+                    continue
                 }
             }
             else if (VicePresident[key] != value) {
                 valid = false
+                continue
             }
         }
 
+        if (VicePresident.position != (pos - 3)) {
+            valid = false
+        }
+
         for (const [key, value] of Object.entries(BackupRoles.President)) {
-            if (key == "position") {
-                if (President.position != (pos - 2)) {
-                    valid = false
-                }
-            }
-            else if (key == "permissions") {
+            if (key == "permissions") {
                 if (President.permissions.bitfield != value) {
                     valid = false
+                    continue
                 }
             }
             else if (President[key] != value) {
                 valid = false
+                continue
             }
         }
 
+        if (President.position != (pos - 2)) {
+            valid = false
+        }
+
         for (const [key, value] of Object.entries(BackupRoles.VotingCommitee)) {
-            if (key == "position") {
-                if (VotingCommitee.position != (pos - 1)) {
-                    valid = false
-                }
-            }
-            else if (key == "permissions") {
+            if (key == "permissions") {
                 if (VotingCommitee.permissions.bitfield != value) {
                     valid = false
+                    continue
                 }
             }
             else if (VotingCommitee[key] != value) {
                 valid = false
+                continue
             }
         }
 
+        if (VotingCommitee.position != (pos - 1)) {
+            valid = false
+        }
+
         for (const [key, value] of Object.entries(BackupRoles.LeadAdmin)) {
-            if (key == "position") {
-                if (LeadAdmin.position != (pos)) {
-                    valid = false
-                }
-            }
-            else if (key == "permissions") {
+            if (key == "permissions") {
                 if (LeadAdmin.permissions.bitfield != value) {
                     valid = false
+                    continue
                 }
             }
             else if (LeadAdmin[key] != value) {
                 valid = false
+                continue
             }
+        }
+
+        if (LeadAdmin.position != (pos)) {
+            valid = false
         }
 
         if (valid) {
