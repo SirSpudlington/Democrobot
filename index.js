@@ -207,6 +207,8 @@ async function roleEvent(event) {
     protected = await Promise.all(protected)
 
     if (protected.includes(event.id)) {
+        // prevent duping
+
         let eventLogs = await server.fetchAuditLogs({
             type: AuditLogEvent.RoleUpdate,
             limit: 32,
@@ -231,26 +233,125 @@ async function roleEvent(event) {
 
         let eventLog = eventLogs.entries.find(x => x.target.id === event.id && x.executor !== client.user && !(processed_audit_logs.id <= x.id))
 
+        let name;
+
         if (eventLog == undefined) {
-            client.channels.cache.get(Channels.Announcements).send({
-                content: `A protected role "${event.name}" has been illegally updated by an unkown user. Resetting functional roles.`,
-            })
+            name = "unknown"
         } else {
             // process_audit_logs
             db.exec(`INSERT INTO processed_audit_logs VALUES("${eventLog.id}")`)
-
+            name = eventLog.executor.username
             role_updating = true
-
-            client.channels.cache.get(Channels.Announcements).send({
-                content: `A protected role "${event.name}" has been illegally updated by ${eventLog.executor.tag}. Resetting functional roles and demoting the user.`,
-            })
         }
+
+        // check if any critical values are modified
+
+        await server.roles.fetch();
 
         let pos = server.roles.cache.size - 1
 
         if (builder_man_exists) {
             pos = pos - 1
         }
+
+        let Executive = server.roles.cache.get(Roles.Executive)
+        let LeadAdmin = server.roles.cache.get(Roles.LeadAdmin)
+        let President = server.roles.cache.get(Roles.President)
+        let VicePresident = server.roles.cache.get(Roles.VicePresident)
+        let VotingCommitee = server.roles.cache.get(Roles.VotingCommitee)
+
+        let valid = true;
+
+        for (const [key, value] of Object.entries(BackupRoles.Executive)) {
+            if (key == "position") {
+                if (Executive.position != (pos - 4)) {
+                    valid = false
+                }
+            }
+            else if (key == "permissions") {
+                if (Executive.permissions.bitfield != value) {
+                    valid = false
+                }
+            }
+            else if (Executive[key] != value) {
+                valid = false
+            }
+        }
+
+        for (const [key, value] of Object.entries(BackupRoles.VicePresident)) {
+            if (key == "position") {
+                if (VicePresident.position != (pos - 3)) {
+                    valid = false
+                }
+            }
+            else if (key == "permissions") {
+                if (VicePresident.permissions.bitfield != value) {
+                    valid = false
+                }
+            }
+            else if (VicePresident[key] != value) {
+                valid = false
+            }
+        }
+
+        for (const [key, value] of Object.entries(BackupRoles.President)) {
+            if (key == "position") {
+                if (President.position != (pos - 2)) {
+                    valid = false
+                }
+            }
+            else if (key == "permissions") {
+                if (President.permissions.bitfield != value) {
+                    valid = false
+                }
+            }
+            else if (President[key] != value) {
+                valid = false
+            }
+        }
+
+        for (const [key, value] of Object.entries(BackupRoles.VotingCommitee)) {
+            if (key == "position") {
+                if (VotingCommitee.position != (pos - 1)) {
+                    valid = false
+                }
+            }
+            else if (key == "permissions") {
+                if (VotingCommitee.permissions.bitfield != value) {
+                    valid = false
+                }
+            }
+            else if (VotingCommitee[key] != value) {
+                valid = false
+            }
+        }
+
+        for (const [key, value] of Object.entries(BackupRoles.LeadAdmin)) {
+            if (key == "position") {
+                if (LeadAdmin.position != (pos)) {
+                    valid = false
+                }
+            }
+            else if (key == "permissions") {
+                if (LeadAdmin.permissions.bitfield != value) {
+                    valid = false
+                }
+            }
+            else if (LeadAdmin[key] != value) {
+                valid = false
+            }
+        }
+
+        if (valid) {
+            // no critical role alteration made
+            return
+        }
+
+        // Name and shame
+
+        client.channels.cache.get(Channels.Announcements).send({
+            content: `A protected role "${event.name}" has been illegally updated by ${name}. Resetting functional roles.`,
+        })
 
         // Update Lead Admin Role
 
