@@ -252,13 +252,13 @@ async function process_vote(interaction) {
 
     let template = (await fs.readFile('./assets/vote_menu.svg')).toString();
 
-    template = template.replace(/{VOTE TITLE}/g, vote.fields["title"]);
+    template = template.replace(/{VOTE TITLE}/g, escape(vote.fields["title"]));
     template = template.replace(/{VOTE TYPE}/g, vote.fields["type"]);
 
     let time_string = new Date(vote.time + VoteMinTime).toISOString().split(".")[0].replace("T", " ") + "UTC";
     template = template.replace(/{VOTE END}/g, time_string);
             
-    let description = vote.fields["Reason"]
+    let description = escape(vote.fields["Reason"])
 
     if (vote.supermajority) {
         description+= " (Supermajority)";
@@ -388,10 +388,10 @@ async function voting_pulse() {
         let time_string = new Date(vote.time + VoteMinTime).toISOString().split(".")[0].replace("T", " ") + " UTC";
         template = template.replace(/{VOTE END}/g, time_string);
     
-        template = template.replace(/{VOTE TITLE}/g, vote.fields["title"]);
+        template = template.replace(/{VOTE TITLE}/g, escape(vote.fields["title"]));
         template = template.replace(/{VOTE TYPE}/g, vote.fields["type"]);
                 
-        let description = vote.fields["Reason"]
+        let description = escape(vote.fields["Reason"])
     
         if (vote.supermajority) {
             description+= " (Supermajority)";
