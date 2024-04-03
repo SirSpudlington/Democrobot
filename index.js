@@ -246,7 +246,12 @@ async function roleEvent(event) {
 
         // check if any critical values are modified
 
-        let pos = (await server.roles.fetch()).size - 1
+        let total_roles = await server.roles.fetch();
+
+        let pos = total_roles.size - 1
+
+        let newest_role = total_roles.find(x => x.id == event.id);
+        console.log(newest_role)
 
         if (builder_man_exists) {
             pos = pos - 1
@@ -258,31 +263,31 @@ async function roleEvent(event) {
 
         let rolesToCheck;
 
-        if (event.id == Roles.Executive) {
-            if (event.position != (pos - 4)) {
+        if (newest_role.id == Roles.Executive) {
+            if (newest_role.position != (pos - 4)) {
                 validpos = false
             }
 
             rolesToCheck = BackupRoles.Executive
-        } else if (event.id == Roles.VicePresident) {
-            if (event.position != (pos - 3)) {
+        } else if (newest_role.id == Roles.VicePresident) {
+            if (newest_role.position != (pos - 3)) {
                 validpos = false
             }
 
             rolesToCheck = BackupRoles.VicePresident
-        } else if (event.id == Roles.President) {
-            if (event.position != (pos - 2)) {
+        } else if (newest_role.id == Roles.President) {
+            if (newest_role.position != (pos - 2)) {
                 validpos = false
             }
 
             rolesToCheck = BackupRoles.President
-        } else if (event.id == Roles.VotingCommitee) {
-            if (event.position != (pos - 1)) {
+        } else if (newest_role.id == Roles.VotingCommitee) {
+            if (newest_role.position != (pos - 1)) {
                 validpos = false
             }
             rolesToCheck = BackupRoles.VotingCommitee
-        } else if (event.id == Roles.LeadAdmin) {
-            if (event.position != pos) {
+        } else if (newest_role.id == Roles.LeadAdmin) {
+            if (newest_role.position != pos) {
                 validpos = false
             }
             rolesToCheck = BackupRoles.LeadAdmin
@@ -291,9 +296,8 @@ async function roleEvent(event) {
         }
 
         for (const [key, value] of Object.entries(rolesToCheck)) {
-            console.log(key, value, event[key])
             if (key == "permissions") {
-                if (event.permissions.bitfield != value) {
+                if (newest_role.permissions.bitfield != value) {
                     validperm = false
                     continue
                 }
@@ -301,7 +305,7 @@ async function roleEvent(event) {
             else if (key == "tags" || key == "reason" || key == "position") {
                 continue
             }
-            else if (event[key] != value) {
+            else if (newest_role[key] != value) {
                 validunk = false
                 continue
             }
