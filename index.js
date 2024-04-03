@@ -341,6 +341,7 @@ async function roleEvent(event) {
             }
             else if (LeadAdmin[key] != value) {
                 validunk = false
+                console.log(key, value)
                 continue
             }
         }
@@ -349,7 +350,6 @@ async function roleEvent(event) {
             validpos = false
         }
 
-        console.log(validperm, validunk, validpos)
 
         if (validperm && validunk && validpos) {
             // no critical role alteration made
