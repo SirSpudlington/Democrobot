@@ -260,21 +260,23 @@ async function roleEvent(event) {
         let VicePresident = server.roles.cache.get(Roles.VicePresident)
         let VotingCommitee = server.roles.cache.get(Roles.VotingCommitee)
 
-        let valid = true;
+        let validpos = true;
+        let validperm = true;
+        let validunk = true;
 
         if (Executive.position != (pos - 4)) {
-            valid = false
+            validpos = false
         }
 
         for (const [key, value] of Object.entries(BackupRoles.Executive)) {
             if (key == "permissions") {
                 if (Executive.permissions.bitfield != value) {
-                    valid = false
+                    validperm = false
                     continue
                 }
             }
             else if (Executive[key] != value) {
-                valid = false
+                validunk = false
                 continue
             }
         }
@@ -282,75 +284,78 @@ async function roleEvent(event) {
         for (const [key, value] of Object.entries(BackupRoles.VicePresident)) {
             if (key == "permissions") {
                 if (VicePresident.permissions.bitfield != value) {
-                    valid = false
+                    validperm = false
                     continue
                 }
             }
             else if (VicePresident[key] != value) {
-                valid = false
+                validunk = false
                 continue
             }
         }
 
         if (VicePresident.position != (pos - 3)) {
-            valid = false
+            validpos = false
         }
 
         for (const [key, value] of Object.entries(BackupRoles.President)) {
             if (key == "permissions") {
                 if (President.permissions.bitfield != value) {
-                    valid = false
+                    validperm = false
                     continue
                 }
             }
             else if (President[key] != value) {
-                valid = false
+                validunk = false
                 continue
             }
         }
 
         if (President.position != (pos - 2)) {
-            valid = false
+            validpos = false
         }
 
         for (const [key, value] of Object.entries(BackupRoles.VotingCommitee)) {
             if (key == "permissions") {
                 if (VotingCommitee.permissions.bitfield != value) {
-                    valid = false
+                    validperm = false
                     continue
                 }
             }
             else if (VotingCommitee[key] != value) {
-                valid = false
+                validunk = false
                 continue
             }
         }
 
         if (VotingCommitee.position != (pos - 1)) {
-            valid = false
+            validpos = false
         }
 
         for (const [key, value] of Object.entries(BackupRoles.LeadAdmin)) {
             if (key == "permissions") {
                 if (LeadAdmin.permissions.bitfield != value) {
-                    valid = false
+                    validperm = false
                     continue
                 }
             }
             else if (LeadAdmin[key] != value) {
-                valid = false
+                validunk = false
                 continue
             }
         }
 
         if (LeadAdmin.position != (pos)) {
-            valid = false
+            validpos = false
         }
 
-        if (valid) {
+        if (validperm && validunk && validpos) {
             // no critical role alteration made
+            console.log(validperm, validunk, validpos)
             return
         }
+
+        // Name and shame
 
         // Name and shame
 
