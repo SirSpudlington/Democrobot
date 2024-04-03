@@ -275,6 +275,9 @@ async function roleEvent(event) {
                     continue
                 }
             }
+            else if (key == "tags" || key == "reason") {
+                continue
+            }
             else if (Executive[key] != value) {
                 validunk = false
                 continue
@@ -287,6 +290,9 @@ async function roleEvent(event) {
                     validperm = false
                     continue
                 }
+            }
+            else if (key == "tags" || key == "reason") {
+                continue
             }
             else if (VicePresident[key] != value) {
                 validunk = false
@@ -305,6 +311,9 @@ async function roleEvent(event) {
                     continue
                 }
             }
+            else if (key == "tags" || key == "reason") {
+                continue
+            }
             else if (President[key] != value) {
                 validunk = false
                 continue
@@ -321,6 +330,9 @@ async function roleEvent(event) {
                     validperm = false
                     continue
                 }
+            }
+            else if (key == "tags" || key == "reason") {
+                continue
             }
             else if (VotingCommitee[key] != value) {
                 validunk = false
@@ -339,9 +351,11 @@ async function roleEvent(event) {
                     continue
                 }
             }
+            else if (key == "tags" || key == "reason") {
+                continue
+            }
             else if (LeadAdmin[key] != value) {
                 validunk = false
-                console.log(key, value)
                 continue
             }
         }
