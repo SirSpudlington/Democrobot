@@ -291,7 +291,7 @@ async function roleEvent(event) {
         }
 
         for (const [key, value] of Object.entries(rolesToCheck)) {
-            console.log(key, value)
+            console.log(key, value, event[key])
             if (key == "permissions") {
                 if (event.permissions.bitfield != value) {
                     validperm = false
