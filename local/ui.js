@@ -149,7 +149,7 @@ function InfoPanel(president, leadAdmin, votersCommitee, vice) {
 
     if (period == "Accepting Candidate Applications") {
         info.addFields(
-            { name: 'Voting starts in', value: time2([time_until_new - ((Times.AppicationTime + Times.VotingTime) / 1000) ], "R")},
+            { name: 'Voting starts in', value: time2([time_until_new - ((Times.AppicationTime / 1000) + (Times.VotingTime / 1000)) ], "R")},
         )
     } else if (period == "Voting") {
         info.addFields(
