@@ -122,12 +122,9 @@ function GenericVoteMenu(supermajority, type, reason, user) {
         )
 }
 
-const TotalTime = Times.CandidateTime + Times.VotingTime + Times.AppicationTime;
-
 function InfoPanel(president, leadAdmin, votersCommitee, vice) {
     let x = getPeriod();
     let period = x[0];
-    let time_until_new = x[1];
 
     if (period === "Application") {
         period = "Accepting Candidate Applications"
@@ -137,6 +134,11 @@ function InfoPanel(president, leadAdmin, votersCommitee, vice) {
         period = "Running Smoothly"
     }
 
+    const TotalTime = Times.AppicationTime + Times.CandidateTime + Times.CandidateTime;
+
+    let current_period = Math.floor((new Date().getTime() - (Times.StartTimestamp * 1000)) / TotalTime)
+    let next_time = (current_period + 1) * TotalTime + (Times.StartTimestamp * 1000)
+
     let info = new EmbedBuilder()
         .setTitle('Current Stats')
         .setColor(0x0099FF)
@@ -144,18 +146,16 @@ function InfoPanel(president, leadAdmin, votersCommitee, vice) {
         .setDescription('Current server stats.')
         .addFields(
             { name: 'The server status is currently', value: period },
-            { name: 'The next term will start in', value: time2([time_until_new - TotalTime], "R")},
-
-            
-        )
+            { name: 'The next term will start in', value: time2([next_time], "R")},
+        );
 
     if (period == "Accepting Candidate Applications") {
         info.addFields(
-            { name: 'Voting starts in', value: time2([time_until_new - (Times.CandidateTime + Times.VotingTime + TotalTime) ], "R")},
+            { name: 'Voting starts in', value: time2([next_time - (Times.VotingTime + Times.CandidateTime)], "R")},
         )
     } else if (period == "Voting") {
         info.addFields(
-            { name: 'Voting ends in', value: time2([time_until_new - (Times.CandidateTime + TotalTime)], "R")},
+            { name: 'Voting ends in', value: time2([next_time - Times.CandidateTime], "R")},
         )
     }
 
