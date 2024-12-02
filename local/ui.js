@@ -122,7 +122,7 @@ function GenericVoteMenu(supermajority, type, reason, user) {
         )
 }
 
-const TotalTime = Times.CandidateTime + Times.VotingTime + Times.ApplicationTime;
+const TotalTime = Times.CandidateTime + Times.VotingTime + Times.AppicationTime;
 
 function InfoPanel(president, leadAdmin, votersCommitee, vice) {
     let x = getPeriod();
