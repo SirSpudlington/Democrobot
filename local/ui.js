@@ -122,6 +122,8 @@ function GenericVoteMenu(supermajority, type, reason, user) {
         )
 }
 
+const TotalTime = Times.CandidateTime + Times.VotingTime + Times.ApplicationTime;
+
 function InfoPanel(president, leadAdmin, votersCommitee, vice) {
     let x = getPeriod();
     let period = x[0];
@@ -142,18 +144,18 @@ function InfoPanel(president, leadAdmin, votersCommitee, vice) {
         .setDescription('Current server stats.')
         .addFields(
             { name: 'The server status is currently', value: period },
-            { name: 'The next term will start in', value: time2([time_until_new], "R")},
+            { name: 'The next term will start in', value: time2([time_until_new - TotalTime], "R")},
 
             
         )
 
     if (period == "Accepting Candidate Applications") {
         info.addFields(
-            { name: 'Voting starts in', value: time2([time_until_new - (Times.CandidateTime + Times.VotingTime) ], "R")},
+            { name: 'Voting starts in', value: time2([time_until_new - (Times.CandidateTime + Times.VotingTime + TotalTime) ], "R")},
         )
     } else if (period == "Voting") {
         info.addFields(
-            { name: 'Voting ends in', value: time2([time_until_new - Times.CandidateTime], "R")},
+            { name: 'Voting ends in', value: time2([time_until_new - (Times.CandidateTime + TotalTime)], "R")},
         )
     }
 
