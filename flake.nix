@@ -6,9 +6,16 @@
   };
 
   outputs = { self, nixpkgs }: {
-    devShells.default = nixpkgs.lib.mkShell {
+    devShell.x86_64-linux = let
+      system = "x86_64-linux";
+      pkgs = import nixpkgs { inherit system; };
+    in pkgs.mkShell  {
       buildInputs = [
+        pkgs.nodejs
       ];
+      shellHook = ''
+        npm i
+      '';
     };
   };
 }
