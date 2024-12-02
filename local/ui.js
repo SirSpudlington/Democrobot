@@ -1,5 +1,6 @@
 const { ButtonBuilder, ButtonStyle, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, EmbedBuilder } = require("discord.js")
 const { getPeriod, time2 } = require("./utils")
+const { Times } = require('../config.json');
 
 const apply = new ButtonBuilder()
     .setCustomId('apply')
@@ -142,10 +143,25 @@ function InfoPanel(president, leadAdmin, votersCommitee, vice) {
         .addFields(
             { name: 'The server status is currently', value: period },
             { name: 'The next term will start in', value: time2([time_until_new], "R")},
-            { name: 'President: ', value: `<@${president}>` },
-            { name: 'Vice President: ', value: `<@${vice}>` },
-            { name: 'Lead Admin: ', value: `<@${leadAdmin}>` },
+
+            
         )
+
+    if (period == "Accepting Candidate Applications") {
+        info.addFields(
+            { name: 'Voting starts in', value: time2([time_until_new - ((Times.AppicationTime + Times.VotingTime) / 1000) ], "R")},
+        )
+    } else if (period == "Voting") {
+        info.addFields(
+            { name: 'Voting ends in', value: time2([time_until_new - (Times.AppicationTime / 1000)], "R")},
+        )
+    }
+
+    info.addFields(
+        { name: 'President: ', value: `<@${president}>` },
+        { name: 'Vice President: ', value: `<@${vice}>` },
+        { name: 'Lead Admin: ', value: `<@${leadAdmin}>` },
+    )
 
     return info;
 }

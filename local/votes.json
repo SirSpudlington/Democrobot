@@ -47,5 +47,13 @@
         "inputs": [
             { "name": "Reason", "description": "Why the updates are needed.", "required": true, "type": "string" }
         ]
+    },
+    {
+        "name": "Call a new general election",
+        "description": "Force a new general election and reset the term to now.",
+        "supermajority": false,
+        "inputs": [
+            { "name": "Reason", "description": "Why the election is needed.", "required": true, "type": "string" }
+        ]
     }
 ]
