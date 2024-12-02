@@ -137,7 +137,6 @@ function InfoPanel(president, leadAdmin, votersCommitee, vice) {
     const TotalTime = Times.AppicationTime + Times.CandidateTime + Times.CandidateTime;
 
     let current_period = Math.floor((new Date().getTime() - (Times.StartTimestamp * 1000)) / TotalTime)
-    let next_time = ((current_period + 1) * TotalTime) + (Times.StartTimestamp * 1000)
     let current_time = (current_period * TotalTime) + (Times.StartTimestamp * 1000)
 
     let info = new EmbedBuilder()
@@ -147,7 +146,7 @@ function InfoPanel(president, leadAdmin, votersCommitee, vice) {
         .setDescription('Current server stats.')
         .addFields(
             { name: 'The server status is currently', value: period },
-            { name: 'The next term will start in', value: time2([next_time], "R")},
+            { name: 'The next term will start in', value: time2([current_time + Times.AppicationTime + Times.VotingTime + Times.CandidateTime], "R")},
         );
 
     if (period == "Accepting Candidate Applications") {
