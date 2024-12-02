@@ -137,7 +137,8 @@ function InfoPanel(president, leadAdmin, votersCommitee, vice) {
     const TotalTime = Times.AppicationTime + Times.CandidateTime + Times.CandidateTime;
 
     let current_period = Math.floor((new Date().getTime() - (Times.StartTimestamp * 1000)) / TotalTime)
-    let next_time = (current_period + 1) * TotalTime + (Times.StartTimestamp * 1000)
+    let next_time = ((current_period + 1) * TotalTime) + (Times.StartTimestamp * 1000)
+    let current_time = (current_period * TotalTime) + (Times.StartTimestamp * 1000)
 
     let info = new EmbedBuilder()
         .setTitle('Current Stats')
@@ -151,11 +152,11 @@ function InfoPanel(president, leadAdmin, votersCommitee, vice) {
 
     if (period == "Accepting Candidate Applications") {
         info.addFields(
-            { name: 'Voting starts in', value: time2([next_time - (Times.VotingTime + Times.CandidateTime)], "R")},
+            { name: 'Voting starts in', value: time2([current_time + Times.AppicationTime], "R")},
         )
     } else if (period == "Voting") {
         info.addFields(
-            { name: 'Voting ends in', value: time2([next_time - Times.CandidateTime], "R")},
+            { name: 'Voting ends in', value: time2([current_time + Times.AppicationTime + Times.VotingTime], "R")},
         )
     }
 
