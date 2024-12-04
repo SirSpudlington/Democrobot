@@ -5,7 +5,7 @@ const { token, Server, Roles, Channels, InterfaceMessage, InfoMessage, BackupRol
 const { ControlPanel, CandidateTypes, VotingMenu, InfoPanel } = require('./local/ui.js');
 const { time2, getPeriod } = require('./local/utils.js');
 const { db } = require('./local/db.js');
-const {voting_init, process_vote, voting_pulse} = require('./local/voting.js');
+const { voting_init, process_vote, voting_pulse } = require('./local/voting.js');
 const logger = require('./local/logger.js');
 
 
@@ -864,6 +864,14 @@ setInterval(async () => {
         let sel_vote_3;
         let sel_vote_4;
 
+        let sel_pres_votes;
+        let sel_vp_votes;
+        let sel_lead_votes;
+        let sel_vote_1_votes;
+        let sel_vote_2_votes;
+        let sel_vote_3_votes;
+        let sel_vote_4_votes;
+
 
         if (Object.keys(presidents).length > 0) {
             let max = 0;
@@ -887,6 +895,8 @@ setInterval(async () => {
 
             sel_pres = max_user;
             sel_vp = second_max_user;
+            sel_pres_votes = max;
+            sel_vp_votes = second_max;
         }
 
         if (Object.keys(leadAdmins).length > 0) {
@@ -901,6 +911,7 @@ setInterval(async () => {
             }
 
             sel_lead = max_user;
+            sel_lead_votes = max;
         }
 
         if (Object.keys(votersCommitees).length > 0) {
@@ -936,6 +947,10 @@ setInterval(async () => {
             sel_vote_2 = max_user[1];
             sel_vote_3 = max_user[2];
             sel_vote_4 = max_user[3];
+            sel_vote_1_votes = max[0];
+            sel_vote_2_votes = max[1];
+            sel_vote_3_votes = max[2];
+            sel_vote_4_votes = max[3];
         }
 
         if (sel_pres == undefined) {
@@ -995,7 +1010,8 @@ setInterval(async () => {
         user.roles.add(Roles.VotingCommitee);
         user.roles.add(Roles.Executive);
 
-        client.channels.cache.get(Channels.Announcements).send({ content: `Please congratulate the following candidates: \n\nPresident: <@${sel_pres}>\nVP: <@${sel_vp}>\nLead Admin: <@${sel_lead}>\nVoters Commitee: <@${sel_vote_1}> <@${sel_vote_2}> <@${sel_vote_3}> <@${sel_vote_4}>` });
+        client.channels.cache.get(Channels.Announcements).send(
+            {content: `Please congratulate the following candidates: \n\nPresident: <@${sel_pres}> (${sel_pres_votes} votes)\nVP: <@${sel_vp}> (${sel_vp_votes} votes)\nLead Admin: <@${sel_lead}> (${sel_lead_votes} votes)\nVoters Commitee: <@${sel_vote_1}> (${sel_vote_1_votes} votes) <@${sel_vote_2}> (${sel_vote_2_votes} votes) <@${sel_vote_3}> (${sel_vote_3_votes} votes) <@${sel_vote_4}> (${sel_vote_4_votes} votes)` });
 
     }
 
