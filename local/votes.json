@@ -49,7 +49,7 @@
         ]
     },
     {
-        "name": "Call a new general election",
+        "name": "General election",
         "description": "Force a new general election and reset the term to now.",
         "supermajority": false,
         "inputs": [

@@ -574,7 +574,7 @@ async function voting_pulse() {
                 await msg.edit("Democrobot Update (" + time_string + "):\n  Core files: ✅ ( " + Math.round(total_core / 100) / 10 + "s )\n  Dependencies: ✅ ( " + Math.round(total_dep / 100) / 10 + "s )")
                 process.exit(0);
             }, 1000);
-        } else if (vote.fields.type == "Call a new general election" && passed) {
+        } else if (vote.fields.type == "General election" && passed) {
             let new_data = require('../config.json');
             new_data["Times"]["StartTimestamp"] = Math.floor(new Date().getTime() / 1000);
             fs.writeFileSync('../config.json', JSON.stringify(new_data, null, 4));
@@ -583,7 +583,7 @@ async function voting_pulse() {
         await msg.edit({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png'}], components: [], content: result});
         await db.run("DELETE FROM votes WHERE id = ?", [vote.id]);
 
-        if ((vote.fields.type == "Delete Builderman" && passed) || (vote.fields.type == "Call a new general election" && passed)) {
+        if ((vote.fields.type == "Delete Builderman" && passed) || (vote.fields.type == "General election" && passed)) {
             // exit program
             process.exit(0);
         }
