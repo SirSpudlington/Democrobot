@@ -284,9 +284,9 @@ async function process_vote(interaction) {
     template = template.replace(/{VOTE_PCT_2}/g, ((vote.fields.cvotes.against / total_votes) * 85) + 5);
     template = template.replace(/{VOTE_PCT_3}/g, ((vote.fields.cvotes.abstain / total_votes) * 85) + 5);
 
-    template = template.replace(/{PCT1}/g, `${pct1} (${vote.fields.cvotes.for} votes)`);
-    template = template.replace(/{PCT2}/g, `${pct2} (${vote.fields.cvotes.against} votes)`);
-    template = template.replace(/{PCT3}/g, `${pct3} (${vote.fields.cvotes.abstain} votes)`);
+    template = template.replace(/{PCT1}/g, `${pct1} (${vote.fields.cvotes.for})`);
+    template = template.replace(/{PCT2}/g, `${pct2} (${vote.fields.cvotes.against})`);
+    template = template.replace(/{PCT3}/g, `${pct3} (${vote.fields.cvotes.abstain})`);
 
     vc = vc.map((id) => {
         let username = (client.users.cache.get(id)).displayName;
