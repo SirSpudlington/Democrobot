@@ -31,7 +31,7 @@
   <text x="5" y="95" style="font: 4px sans-serif; fill: white;">{USER1}</text>
   <text x="5" y="102" style="font: 4px sans-serif; fill: white;">{USER2}</text>
   <text x="5" y="109" style="font: 4px sans-serif; fill: white;">{USER3}</text>
-  <text x="5" y="116" style="font: 4px sans-serif; fill: white;">{USER3}</text>
+  <text x="5" y="116" style="font: 4px sans-serif; fill: white;">{USER4}</text>
 
   <text x="85" y="95" style="font: 4px sans-serif; fill: white;">: {EMOJI1}</text>
   <text x="85" y="102" style="font: 4px sans-serif; fill: white;">: {EMOJI2}</text>
