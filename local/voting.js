@@ -290,10 +290,12 @@ async function process_vote(interaction) {
     template = template.replace(/{PCT2}/g, `${pct2} (${vote.fields.cvotes.against})`);
     template = template.replace(/{PCT3}/g, `${pct3} (${vote.fields.cvotes.abstain})`);
 
-    vc = vc.map((id) => {
-        let username = (client.users.cache.get(id)).displayName;
+    vc = vc.map(async (id) => {
+        let username = (await client.users.get(id)).displayName;
         return escape(username);
     })
+
+    vc = await Promise.all(vc);
 
 
     template = template.replace(/{USER1}/g, vc[0]);
