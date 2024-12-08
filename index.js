@@ -17,9 +17,8 @@ var builder_man_exists = false
 /*
 
 Each voting commitee member has 10% of voting power
-The president has 10% of voting power
 
-The president can veto proposals
+TODO: The president can veto proposals
 
 */
 
