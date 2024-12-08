@@ -291,7 +291,7 @@ async function process_vote(interaction) {
     template = template.replace(/{PCT3}/g, `${pct3} (${vote.fields.cvotes.abstain})`);
 
     vc = vc.map(async (id) => {
-        let username = (await client.users.get(id)).displayName;
+        let username = (await client.users.fetch(id)).displayName;
         return escape(username);
     })
 
