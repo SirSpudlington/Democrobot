@@ -118,10 +118,10 @@ async function handle_interaction(interaction) {
 
             fields["votes"] = []
 
-            users = users.map((user) => {
+            users = users.map(async (user) => {
                 let id = user.user;
                 
-                let username = (client.users.cache.get(id)).displayName;
+                let username = (client.users.fetch(id)).displayName;
                 if (id == client.user.id) {
                     fields["votes"].push(0)
                 } else {
@@ -129,6 +129,8 @@ async function handle_interaction(interaction) {
                 }
                 return escape(username);
             })
+
+            users = await Promise.all(users);
 
 
             // ⌛ ✅ ❌
