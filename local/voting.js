@@ -121,7 +121,7 @@ async function handle_interaction(interaction) {
             users = users.map(async (user) => {
                 let id = user.user;
                 
-                let username = (client.users.fetch(id)).displayName;
+                let username = (await client.users.fetch(id)).displayName;
                 if (id == client.user.id) {
                     fields["votes"].push(0)
                 } else {
