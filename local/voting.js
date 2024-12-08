@@ -292,6 +292,7 @@ async function process_vote(interaction) {
 
     vc = vc.map(async (id) => {
         let username = (await client.users.fetch(id)).displayName;
+        console.log(id, username);
         return escape(username);
     })
 
