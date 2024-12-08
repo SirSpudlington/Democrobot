@@ -18,9 +18,9 @@
   <line x1="5" y1="67.5" x2="90" y2="67.5" stroke-linecap="round" stroke="#202020"/>
   <line x1="5" y1="75" x2="90" y2="75" stroke-linecap="round" stroke="#202020"/>
 
-  <text x="93" y="60.7" style="font: 3px sans-serif; fill: white;">{PCT1}% In favour</text>
-  <text x="93" y="68.2" style="font: 3px sans-serif; fill: white;">{PCT2}% Against</text>
-  <text x="93" y="75.7" style="font: 3px sans-serif; fill: white;">{PCT3}% Abstained</text>
+  <text x="93" y="60.7" style="font: 3px sans-serif; fill: white;">{PCT1} In favour</text>
+  <text x="93" y="68.2" style="font: 3px sans-serif; fill: white;">{PCT2} Against</text>
+  <text x="93" y="75.7" style="font: 3px sans-serif; fill: white;">{PCT3} Abstained</text>
 
   <line x1="5" y1="60" x2="{VOTE_PCT_1}" y2="60" stroke-linecap="round" stroke="#20cc20"/>
   <line x1="5" y1="67.5" x2="{VOTE_PCT_2}" y2="67.5" stroke-linecap="round" stroke="#ee2020"/>
