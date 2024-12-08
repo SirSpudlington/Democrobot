@@ -297,7 +297,6 @@ async function process_vote(interaction) {
 
     vc = await Promise.all(vc);
 
-
     template = template.replace(/{USER1}/g, vc[0]);
     template = template.replace(/{USER2}/g, vc[1]);
     template = template.replace(/{USER3}/g, vc[2]);
