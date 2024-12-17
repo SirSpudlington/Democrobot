@@ -17,8 +17,13 @@ const vote = new ButtonBuilder()
     .setLabel('Vote for a candiate')
     .setStyle(ButtonStyle.Success);
 
+const power = new ButtonBuilder()
+    .setCustomId('action_of_power')
+    .setLabel('Perform jurisdictional action')
+    .setStyle(ButtonStyle.Danger);
 
-const ControlPanel = new ActionRowBuilder().addComponents(vote, apply, create_vote);
+
+const ControlPanel = new ActionRowBuilder().addComponents(vote, apply, create_vote, power);
 
 const select = new StringSelectMenuBuilder()
     .setCustomId('apply-menu')
