@@ -1,6 +1,6 @@
 const { Events, StringSelectMenuBuilder, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ButtonBuilder, ButtonStyle } = require('discord.js');
 const commands = require('./votes.json');
-const { promises: fs } = require('fs');
+const { promises: fs, writeFileSync } = require('fs');
 const render = require('svg-render');
 const { randomUUID } = require('crypto');
 const { Channels, VoteMinTime, Server } = require('../config.json');
@@ -579,7 +579,7 @@ async function voting_pulse() {
         } else if (vote.fields.type == "General election" && passed) {
             let new_data = require('../config.json');
             new_data["Times"]["StartTimestamp"] = Math.floor(new Date().getTime() / 1000);
-            fs.writeFileSync('../config.json', JSON.stringify(new_data, null, 4));
+            writeFileSync('../config.json', JSON.stringify(new_data, null, 4));
         }
 
         await msg.edit({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png'}], components: [], content: result});
