@@ -23,7 +23,7 @@ const power = new ButtonBuilder()
     .setStyle(ButtonStyle.Danger);
 
 
-const ControlPanel = new ActionRowBuilder().addComponents(vote, apply, create_vote, power);
+const ControlPanel = new ActionRowBuilder().addComponents(vote, apply, create_vote);
 
 const select = new StringSelectMenuBuilder()
     .setCustomId('apply-menu')

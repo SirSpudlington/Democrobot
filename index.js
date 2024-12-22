@@ -109,8 +109,6 @@ client.once(Events.ClientReady, async (readyClient) => {
     await resetRoles(server);
     await setRoles(server);
 
-    
-
     logger.info("Updating Control Panel")
 
     message = await (await server.channels.cache.get(Channels.Interface).messages.fetch(InterfaceMessage))
