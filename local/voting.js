@@ -418,9 +418,10 @@ async function voting_pulse() {
         template = template.replace(/{VOTE_PCT_2}/g, ((vote.fields.cvotes.against / total_votes) * 85) + 5);
         template = template.replace(/{VOTE_PCT_3}/g, ((vote.fields.cvotes.abstain / total_votes) * 85) + 5);
     
-        template = template.replace(/{PCT1}/g, pct1);
-        template = template.replace(/{PCT2}/g, pct2);
-        template = template.replace(/{PCT3}/g, pct3);
+        template = template.replace(/{PCT1}/g, `${pct1}% (${vote.fields.cvotes.for})`);
+        template = template.replace(/{PCT2}/g, `${pct2}% (${vote.fields.cvotes.against})`);
+        template = template.replace(/{PCT3}/g, `${pct3}% (${vote.fields.cvotes.abstain})`);
+
 
         vc = vc.map((id) => {
             let username = (client.users.cache.get(id));
@@ -587,7 +588,9 @@ async function voting_pulse() {
 
         if ((vote.fields.type == "Delete Builderman" && passed) || (vote.fields.type == "General election" && passed)) {
             // exit program
-            process.exit(0);
+            setTimeout(() => {
+                process.exit(0);
+            }, 5000);
         }
     }
 }
