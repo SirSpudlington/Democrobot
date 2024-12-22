@@ -9,7 +9,7 @@ const { voting_init, process_vote, voting_pulse } = require('./local/voting.js')
 const logger = require('./local/logger.js');
 
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildModeration] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildModeration, GatewayIntentBits.GuildPresences] });
 
 var server
 var builder_man_exists = false
