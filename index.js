@@ -1034,6 +1034,8 @@ setInterval(async () => {
             sel_vote_4 = client.user.id;
         }
 
+        db.run("DELETE FROM roles WHERE role = 'president' OR role = 'vicepresident' OR role = 'leadAdmin' OR role = 'votersCommitee'");
+
         db.run("INSERT INTO roles (role, user) VALUES (?, ?)", ["president", sel_pres]);
         db.run("INSERT INTO roles (role, user) VALUES (?, ?)", ["vicepresident", sel_vp]);
 
