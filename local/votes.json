@@ -15,6 +15,15 @@
         ]
     },
     {
+        "name": "Time Out",
+        "description": "A vote to timeout a user for 12 hours.",
+        "supermajority": false,
+        "inputs": [
+            { "name": "Reason", "description": "The reason for the vote.", "required": true, "type": "string" },
+            { "name": "User", "description": "The user to timeout.", "required": true, "type": "user" }
+        ]
+    },
+    {
         "name": "Ban",
         "description": "A vote to ban a user.",
         "supermajority": true,

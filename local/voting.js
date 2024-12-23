@@ -536,6 +536,29 @@ async function voting_pulse() {
             }
 
             await sel_member.ban({ deleteMessageSeconds: 60 * 60 * 24 * 7, reason: "A vote has banned you from the server. You have been banned for 1 week." });
+        } else if (vote.fields.type == "Time Out" && passed) {
+            let username = vote.fields["User"];
+
+            let member = Array.from((await client.guilds.cache.get(Server).members.fetch()).values());
+            let sel_member;
+
+            for (let i = 0; i < member.length; i++) {
+                let user = member[i].user;
+                let _username = user.username;
+                if (_username == username) {
+                    sel_member = member[i];
+                    break;
+                }
+            }
+
+            if (sel_member == undefined) {
+                result += "User not found. Vote deleted.";
+                await msg.edit({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png'}], components: [], content: result});
+                await db.run("DELETE FROM votes WHERE id = ?", [vote.id]);
+                return
+            }
+
+            await sel_member.timeout(60 * 60 * 12 * 1000, "A vote has timed you out from the server. You have been timed out for 12 hours.");
         } else if (vote.fields.type == "Unban" && passed) {
             let username = vote.fields["User"];
 
