@@ -614,7 +614,7 @@ async function voting_pulse() {
         await msg.edit({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png'}], components: [], content: result});
         await db.run("DELETE FROM votes WHERE id = ?", [vote.id]);
 
-        if ((vote.fields.type == "Delete Builderman" && passed) || (vote.fields.type == "General election" && passed)) {
+        if (vote.fields.type == "General election" && passed) {
             // exit program
             setTimeout(() => {
                 process.exit(0);
