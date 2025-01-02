@@ -584,7 +584,12 @@ async function voting_pulse() {
             await client.guilds.cache.get(Server).members.unban(sel_member)
         } else if (vote.fields.type == "Delete Builderman" && passed) {
             let role = await client.guilds.cache.get(Server).roles.fetch(Roles.Builderman)
-            await role.delete()
+            // Remove all members
+            let promises = [];
+            role.members.forEach(async (member) => {
+                promises.push(member.roles.remove(role));
+            })
+            await Promise.all(promises);
         } else if (vote.fields.type == "Update Democrobot" && passed) {
             setTimeout(async () => {
                 let time_string = new Date(vote.time + VoteMinTime).toISOString().split(".")[0].replace("T", " ") + " UTC";
