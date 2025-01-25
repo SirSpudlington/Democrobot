@@ -263,12 +263,21 @@ async function roleEvent(event) {
         return role.id
     })
 
-    if (event.permissions.has(PermissionFlagsBits.Administrator) || event.permissions.has(PermissionFlagsBits.BanMembers) || event.permissions.has(PermissionFlagsBits.KickMembers) || event.permissions.has(PermissionFlagsBits.ManageGuild)) {
-        await event.permissions.remove(PermissionFlagsBits.Administrator)
-        await event.permissions.remove(PermissionFlagsBits.BanMembers)
-        await event.permissions.remove(PermissionFlagsBits.KickMembers)
-        await event.permissions.remove(PermissionFlagsBits.ManageGuild)
+    for (let i = 0; i < event.rawPosition; i++) {
+        let roles = BigInt(0);
+
+        let role = await server.roles.fetch(event.id)
+        for (const property in BackupRoles) {
+            roles += (BigInt(BackupRoles[property].permissions) & BigInt(role.permissions))
+        }
+
+        if (roles >= 1n) {
+            await role.edit({
+                permissions: new BitField(0),
+            })
+        }
     }
+
 
     protected = await Promise.all(protected)
 
