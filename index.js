@@ -268,12 +268,14 @@ async function roleEvent(event) {
 
         let role = await server.roles.fetch(event.id)
         for (const property in BackupRoles) {
-            roles += (BigInt(BackupRoles[property].permissions) & BigInt(role.permissions))
+            roles |= (BigInt(BackupRoles[property].permissions) & BigInt(role.permissions))
         }
 
         if (roles >= 1n) {
+            let not_roles = ~roles ;
+
             await role.edit({
-                permissions: new BitField(0),
+                permissions: (BigInt(role.permissions) & not_roles),
             })
         }
     }
