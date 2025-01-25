@@ -77,14 +77,14 @@ client.once(Events.ClientReady, async (readyClient) => {
 
     if (server.roles.cache.has("1194047235491639297")) {
         builder_man_exists = true
-        server.roles.edit('1194047235491639297', { position: server.roles.cache.size - 1 })
+        server.roles.edit('1194047235491639297', { position: server.roles.cache.size - 1, permissions: ["Administrator"] })
             .then(updated => logger.info(`Edited builderman role position to ${updated.position}`))
             .catch(logger.error);
     }
 
     if (server.roles.cache.has("1317959964253229118")) {
         builder_man_exists = true
-        server.roles.edit('1317959964253229118', { position: server.roles.cache.size - 1 })
+        server.roles.edit('1317959964253229118', { position: server.roles.cache.size - 1, permissions: ["Administrator"] })
             .then(updated => logger.info(`Edited builderman role position to ${updated.position}`))
             .catch(logger.error);
     }
@@ -267,13 +267,18 @@ async function roleEvent(event) {
         let roles = BigInt(0);
 
         let role = await server.roles.fetch(event.id)
+
+        if ([Roles.Executive, Roles.LeadAdmin, Roles.President, Roles.VicePresident, Roles.VotingCommitee, "1194047235491639297", "1317959964253229118"].includes(role.id)) {
+            continue
+        }
+
         for (const property in BackupRoles) {
             roles |= (BigInt(BackupRoles[property].permissions) & BigInt(role.permissions))
         }
 
         if (roles >= 1n) {
-            let not_roles = ~roles ;
-
+            let not_roles = ~roles;
+                
             await role.edit({
                 permissions: (BigInt(role.permissions) & not_roles),
             })
