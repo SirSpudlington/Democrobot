@@ -187,7 +187,7 @@ async function handle_interaction(interaction) {
 
             const row = new ActionRowBuilder().addComponents(vote_for, vote_against, abstain_from_vote);
 
-            let message = await client.channels.cache.get(Channels.Votes).send({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png' }], components: [row], content: "<@everyone> A new vote has been created"});
+            let message = await client.channels.cache.get(Channels.Votes).send({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png' }], components: [row], content: "@everyone A new vote has been created"});
 
             fields["msg_id"] = message.id;
             fields["title"] = interaction.user.displayName + "'s vote"
@@ -401,10 +401,10 @@ async function voting_pulse() {
         }
     
         if ("User" in vote.fields) {
-            description += " (Reguarding User: " + vote.fields["User"] + ")";
+            description += "\n(Reguarding User: " + vote.fields["User"] + ")";
         }
     
-        template = template.replace(/{DESCRIPTION}/g, description);
+        template = template.replace(/{DESCRIPTION}/g, description.replace(/\\n/g, "\n"));
     
         let total_votes = vote.fields.cvotes.for + vote.fields.cvotes.against + vote.fields.cvotes.abstain;
         if (total_votes == 0) {
