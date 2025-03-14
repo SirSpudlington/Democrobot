@@ -33,7 +33,7 @@ async function handle_interaction(interaction) {
 
             let row = new ActionRowBuilder().addComponents(select_menu);
 
-            await interaction.reply({ content: 'Select a vote type', components: [row], ephemeral: true});
+            await interaction.reply({ content: 'Select a vote type', components: [row], ephemeral: true });
         }
     } else if (interaction.isStringSelectMenu()) {
         if (interaction.customId === 'vote_create_type') {
@@ -45,7 +45,7 @@ async function handle_interaction(interaction) {
                 let modal = new ModalBuilder()
                     .setCustomId('vote_create_modal__' + command.name)
                     .setTitle(command.name);
-                
+
 
                 for (let i = 0; i < command.inputs.length; i++) {
                     let input = command.inputs[i];
@@ -65,7 +65,7 @@ async function handle_interaction(interaction) {
                         ));
                     }
                 }
-                
+
                 await interaction.showModal(modal);
             }
         }
@@ -89,18 +89,44 @@ async function handle_interaction(interaction) {
 
             template = template.replace(/{VOTE TITLE}/g, escape(interaction.user.displayName) + "'s vote");
             template = template.replace(/{VOTE TYPE}/g, name);
-            
+
             let description = escape(fields["Reason"])
 
             if (superm) {
-                description+= " (Supermajority)";
+                description += " (Supermajority)";
             }
 
             if ("User" in fields) {
                 description += " (Reguarding User: " + fields["User"] + ")";
             }
 
-            template = template.replace(/{DESCRIPTION}/g, description);
+            let faux_description = description.split("\n");
+
+            while (true) {
+                let modified = false;
+                for (let i = 0; i < faux_description.length; i++) {
+                    let line = faux_description[i];
+                    if (line.length > 40) {
+                        faux_description[i] = line.substring(0, 40);
+                        faux_description.splice(i + 1, 0, line.substring(40));
+                        modified = true;
+                    }
+                }
+                if (!modified) {
+                    break;
+                }
+            }
+
+            if (faux_description.length > 5) {
+                faux_description = faux_description.slice(0, 5);
+            }
+
+            let out_desc = "";
+            for (let i = 0; i < faux_description.length; i++) {
+                 out_desc += "<text x='5' y='" + (25 + (i * 6)) + "' style=\"font: 4px sans-serif; fill: white;\">" + faux_description[i] + "</text>\n";
+            }
+
+            template = template.replace(/{DESCRIPTION}/g, out_desc);
 
             template = template.replace(/{PCT1}/g, "0");
             template = template.replace(/{PCT2}/g, "0");
@@ -120,7 +146,7 @@ async function handle_interaction(interaction) {
 
             users = users.map(async (user) => {
                 let id = user.user;
-                
+
                 let username = (await client.users.fetch(id)).displayName;
                 if (id == client.user.id) {
                     fields["votes"].push(0)
@@ -148,7 +174,7 @@ async function handle_interaction(interaction) {
                     type = "Pending "
                 }
 
-                template = template.replace(new RegExp("{EMOJI" + (i+1) + "}", 'g'), type);
+                template = template.replace(new RegExp("{EMOJI" + (i + 1) + "}", 'g'), type);
             }
 
             template = template.replace(/{VOTE_PCT_1}/g, 5);
@@ -187,13 +213,13 @@ async function handle_interaction(interaction) {
 
             const row = new ActionRowBuilder().addComponents(vote_for, vote_against, abstain_from_vote);
 
-            let message = await client.channels.cache.get(Channels.Votes).send({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png' }], components: [row], content: "@everyone A new vote has been created"});
+            let message = await client.channels.cache.get(Channels.Votes).send({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png' }], components: [row], content: "@everyone A new vote has been created" });
 
             fields["msg_id"] = message.id;
             fields["title"] = interaction.user.displayName + "'s vote"
 
             await db.run("INSERT INTO votes (name, fields, time, id) VALUES (?, ?, ?, ?)", [name, JSON.stringify(fields), new Date().getTime(), id]);
-            await interaction.reply({ content: 'Vote created', ephemeral: true});
+            await interaction.reply({ content: 'Vote created', ephemeral: true });
         }
     }
 }
@@ -228,7 +254,7 @@ async function process_vote(interaction) {
         return id;
     })
 
-    
+
     if (vc.indexOf(interaction.user.id) != -1) {
         if (type == "for") {
             vote.fields.votes[vc.indexOf(interaction.user.id)] = 3;
@@ -248,7 +274,7 @@ async function process_vote(interaction) {
             vote.fields.cvotes.abstain++;
         }
     } else {
-        interaction.reply({ content: "You have already voted.", ephemeral: true});
+        interaction.reply({ content: "You have already voted.", ephemeral: true });
         return;
     }
 
@@ -259,18 +285,44 @@ async function process_vote(interaction) {
 
     let time_string = new Date(vote.time + VoteMinTime).toISOString().split(".")[0].replace("T", " ") + "UTC";
     template = template.replace(/{VOTE END}/g, time_string);
-            
+
     let description = escape(vote.fields["Reason"])
 
     if (vote.supermajority) {
-        description+= " (Supermajority)";
+        description += " (Supermajority)";
     }
 
     if ("User" in vote.fields) {
         description += " (Reguarding User: " + vote.fields["User"] + ")";
     }
 
-    template = template.replace(/{DESCRIPTION}/g, description);
+    let faux_description = description.split("\n");
+
+    while (true) {
+        let modified = false;
+        for (let i = 0; i < faux_description.length; i++) {
+            let line = faux_description[i];
+            if (line.length > 40) {
+                faux_description[i] = line.substring(0, 40);
+                faux_description.splice(i + 1, 0, line.substring(40));
+                modified = true;
+            }
+        }
+        if (!modified) {
+            break;
+        }
+    }
+
+    if (faux_description.length > 5) {
+        faux_description = faux_description.slice(0, 5);
+    }
+
+    let out_desc = "";
+    for (let i = 0; i < faux_description.length; i++) {
+        out_desc += "<text x='5' y='" + (25 + (i * 6)) + "' style=\"font: 4px sans-serif; fill: white;\">" + faux_description[i] + "</text>\n";
+    }
+
+    template = template.replace(/{DESCRIPTION}/g, out_desc);
 
     let total_votes = vote.fields.cvotes.for + vote.fields.cvotes.against + vote.fields.cvotes.abstain;
 
@@ -296,7 +348,7 @@ async function process_vote(interaction) {
     })
 
     vc = await Promise.all(vc);
-    
+
     template = template.replace(/{USER1}/g, vc[0]);
     template = template.replace(/{USER2}/g, vc[1]);
     template = template.replace(/{USER3}/g, vc[2]);
@@ -313,7 +365,7 @@ async function process_vote(interaction) {
         } else if (vote.fields["votes"][i] == 3) {
             type = "For"
         }
-        template = template.replace(new RegExp("{EMOJI" + (i+1) + "}", 'g'), type);
+        template = template.replace(new RegExp("{EMOJI" + (i + 1) + "}", 'g'), type);
     }
 
     const outputBuffer = await render({
@@ -339,9 +391,9 @@ async function process_vote(interaction) {
     const row = new ActionRowBuilder().addComponents(vote_for, vote_against, abstain_from_vote);
 
     await db.run("UPDATE votes SET fields = ? WHERE id = ?", [JSON.stringify(vote.fields), id]);
-    await interaction.message.edit({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png' }], components: [row], content: "A new vote has been created"});
+    await interaction.message.edit({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png' }], components: [row], content: "A new vote has been created" });
 
-    interaction.reply({ content: 'Vote processed', ephemeral: true});
+    interaction.reply({ content: 'Vote processed', ephemeral: true });
 }
 
 async function voting_pulse() {
@@ -358,7 +410,7 @@ async function voting_pulse() {
     });
 
     for (let i = 0; i < votes.length; i++) {
-        
+
         let vote = votes[i];
         vote.fields = JSON.parse(vote.fields);
 
@@ -376,8 +428,8 @@ async function voting_pulse() {
                 }
             });
         });
-    
-    
+
+
         vc = vc.map((user) => {
             let id = user.user;
             return id;
@@ -385,27 +437,53 @@ async function voting_pulse() {
 
         let result = "";
 
-    
+
         let template = (await fs.readFile('./assets/vote_menu.svg')).toString();
 
         let time_string = new Date(vote.time + VoteMinTime).toISOString().split(".")[0].replace("T", " ") + " UTC";
         template = template.replace(/{VOTE END}/g, time_string);
-    
+
         template = template.replace(/{VOTE TITLE}/g, escape(vote.fields["title"]));
         template = template.replace(/{VOTE TYPE}/g, vote.fields["type"]);
-                
+
         let description = escape(vote.fields["Reason"])
-    
+
         if (vote.supermajority) {
-            description+= " (Supermajority)";
+            description += " (Supermajority)";
         }
-    
+
         if ("User" in vote.fields) {
             description += "\n(Reguarding User: " + vote.fields["User"] + ")";
         }
-    
-        template = template.replace(/{DESCRIPTION}/g, description.replace(/\\n/g, "\n"));
-    
+
+        let faux_description = description.split("\n");
+
+        while (true) {
+            let modified = false;
+            for (let i = 0; i < faux_description.length; i++) {
+                let line = faux_description[i];
+                if (line.length > 40) {
+                    faux_description[i] = line.substring(0, 40);
+                    faux_description.splice(i + 1, 0, line.substring(40));
+                    modified = true;
+                }
+            }
+            if (!modified) {
+                break;
+            }
+        }
+
+        if (faux_description.length > 5) {
+            faux_description = faux_description.slice(0, 5);
+        }
+
+        let out_desc = "";
+        for (let i = 0; i < faux_description.length; i++) {
+            out_desc += "<text x='5' y='" + (25 + (i * 6)) + "' style=\"font: 4px sans-serif; fill: white;\">" + faux_description[i] + "</text>\n";
+        }
+
+        template = template.replace(/{DESCRIPTION}/g, out_desc);
+
         let total_votes = vote.fields.cvotes.for + vote.fields.cvotes.against + vote.fields.cvotes.abstain;
         if (total_votes == 0) {
             total_votes = 1;
@@ -417,7 +495,7 @@ async function voting_pulse() {
         template = template.replace(/{VOTE_PCT_1}/g, ((vote.fields.cvotes.for / total_votes) * 85) + 5);
         template = template.replace(/{VOTE_PCT_2}/g, ((vote.fields.cvotes.against / total_votes) * 85) + 5);
         template = template.replace(/{VOTE_PCT_3}/g, ((vote.fields.cvotes.abstain / total_votes) * 85) + 5);
-    
+
         template = template.replace(/{PCT1}/g, `${pct1}% (${vote.fields.cvotes.for})`);
         template = template.replace(/{PCT2}/g, `${pct2}% (${vote.fields.cvotes.against})`);
         template = template.replace(/{PCT3}/g, `${pct3}% (${vote.fields.cvotes.abstain})`);
@@ -430,13 +508,13 @@ async function voting_pulse() {
             }
             return escape(username.displayName);
         })
-    
-    
+
+
         template = template.replace(/{USER1}/g, vc[0]);
         template = template.replace(/{USER2}/g, vc[1]);
         template = template.replace(/{USER3}/g, vc[2]);
         template = template.replace(/{USER4}/g, vc[3]);
-    
+
         for (let i = 0; i < vc.length; i++) {
             let type = "";
             if (vote.fields["votes"][i] == 0) {
@@ -448,16 +526,16 @@ async function voting_pulse() {
             } else if (vote.fields["votes"][i] == 3) {
                 type = "For"
             }
-            template = template.replace(new RegExp("{EMOJI" + (i+1) + "}", 'g'), type);
+            template = template.replace(new RegExp("{EMOJI" + (i + 1) + "}", 'g'), type);
         };
-    
+
         const outputBuffer = await render({
             buffer: Buffer.from(template, "utf-8"),
             width: 512
         });
 
         let msg = await client.channels.cache.get(Channels.Votes).messages.fetch(vote.fields["msg_id"]);
-        
+
         let weight_of_vc = Math.ceil(total_votes / 4);
 
         let total_for = 0
@@ -471,8 +549,8 @@ async function voting_pulse() {
             }
         }
 
-        total_for+=vote.fields.cvotes.for
-        total_against+=vote.fields.cvotes.against
+        total_for += vote.fields.cvotes.for
+        total_against += vote.fields.cvotes.against
 
         result = "Vote results: " + total_for + " for, " + total_against + " against. ";
 
@@ -508,7 +586,7 @@ async function voting_pulse() {
 
             if (sel_member == undefined) {
                 result += "User not found. Vote deleted.";
-                await msg.edit({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png'}], components: [], content: result});
+                await msg.edit({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png' }], components: [], content: result });
                 await db.run("DELETE FROM votes WHERE id = ?", [vote.id]);
                 return
             }
@@ -530,7 +608,7 @@ async function voting_pulse() {
 
             if (sel_member == undefined) {
                 result += "User not found. Vote deleted.";
-                await msg.edit({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png'}], components: [], content: result});
+                await msg.edit({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png' }], components: [], content: result });
                 await db.run("DELETE FROM votes WHERE id = ?", [vote.id]);
                 return
             }
@@ -553,7 +631,7 @@ async function voting_pulse() {
 
             if (sel_member == undefined) {
                 result += "User not found. Vote deleted.";
-                await msg.edit({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png'}], components: [], content: result});
+                await msg.edit({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png' }], components: [], content: result });
                 await db.run("DELETE FROM votes WHERE id = ?", [vote.id]);
                 return
             }
@@ -576,7 +654,7 @@ async function voting_pulse() {
 
             if (sel_member == undefined) {
                 result += "User not found. Vote deleted.";
-                await msg.edit({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png'}], components: [], content: result});
+                await msg.edit({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png' }], components: [], content: result });
                 await db.run("DELETE FROM votes WHERE id = ?", [vote.id]);
                 return
             }
@@ -611,7 +689,7 @@ async function voting_pulse() {
             writeFileSync('./config.json', JSON.stringify(new_data, null, 4));
         }
 
-        await msg.edit({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png'}], components: [], content: result});
+        await msg.edit({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png' }], components: [], content: result });
         await db.run("DELETE FROM votes WHERE id = ?", [vote.id]);
 
         if (vote.fields.type == "General election" && passed) {
@@ -623,4 +701,4 @@ async function voting_pulse() {
     }
 }
 
-module.exports = {voting_init, process_vote, voting_pulse}
+module.exports = { voting_init, process_vote, voting_pulse }

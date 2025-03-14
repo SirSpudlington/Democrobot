@@ -5,7 +5,7 @@
   <text x="5" y="12.5" style="font: 7.5px sans-serif; fill: white;">{VOTE TITLE}</text>
   <text x="50" y="19" style="font: 4px sans-serif; fill: white;">{VOTE END}</text>
   <text x="5" y="19" style="font: 4px sans-serif; fill: white;">{VOTE TYPE}</text>
-  <text x="5" y="25" style="font: 3px sans-serif; fill: white;">{DESCRIPTION}</text>
+  {DESCRIPTION}
   
   // Votes
   <text x="4.8" y="50" style="font: 4px sans-serif; fill: white;">Votes: </text>
