@@ -187,7 +187,7 @@ async function handle_interaction(interaction) {
 
             const row = new ActionRowBuilder().addComponents(vote_for, vote_against, abstain_from_vote);
 
-            let message = await client.channels.cache.get(Channels.Votes).send({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png' }], components: [row]});
+            let message = await client.channels.cache.get(Channels.Votes).send({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png' }], components: [row], content: "<@everyone> A new vote has been created"});
 
             fields["msg_id"] = message.id;
             fields["title"] = interaction.user.displayName + "'s vote"
@@ -339,7 +339,7 @@ async function process_vote(interaction) {
     const row = new ActionRowBuilder().addComponents(vote_for, vote_against, abstain_from_vote);
 
     await db.run("UPDATE votes SET fields = ? WHERE id = ?", [JSON.stringify(vote.fields), id]);
-    await interaction.message.edit({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png' }], components: [row]});
+    await interaction.message.edit({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png' }], components: [row], content: "A new vote has been created"});
 
     interaction.reply({ content: 'Vote processed', ephemeral: true});
 }
