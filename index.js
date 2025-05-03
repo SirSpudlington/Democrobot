@@ -708,40 +708,11 @@ client.on(Events.GuildAuditLogEntryCreate, async (entry) => {
 
             await resetRoles(server)
 
-            let cans = await (new Promise((resolve, reject) => {
-                db.all("SELECT * FROM roles WHERE user = ?", [entry.executorId], async (err, rows) => {
-                    resolve(rows)
-                })
-            }))
-
-            prmoises = []
-
-            for (let i = 0; i < cans.length; i++) {
-                let row = cans[i]
-                if (row == undefined) {
-                    return;
+            db.run("DELETE FROM roles WHERE user = ?", [entry.executorId], (err) => {
+                if (err) {
+                    client.channels.cache.get(Channels.Announcements).send({ content: `Democrobot error: ${err}` });
                 }
-                prmoises.push((new Promise((resolve, reject) => {
-                    db.run("INSERT INTO roles (user, role) VALUES (?, ?)", [client.user.id, row.role], (err) => {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve();
-                        }
-                    });
-                })));
-                promises.push((new Promise((resolve, reject) => {
-                    db.run("DELETE FROM roles WHERE user = ?", [entry.executorId], (err) => {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve();
-                        }
-                    });
-                })));
-            }
-
-            await Promise.all(prmoises)
+            });
 
             await setRoles(server)
         }
