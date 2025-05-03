@@ -88,16 +88,17 @@ async function handle_interaction(interaction) {
             let template = (await fs.readFile('./assets/vote_menu.svg')).toString();
 
             template = template.replace(/{VOTE TITLE}/g, escape(interaction.user.displayName) + "'s vote");
+
+            if ("User" in fields) {
+                name += fields["User"];
+            }
+
             template = template.replace(/{VOTE TYPE}/g, name);
 
             let description = escape(fields["Reason"])
 
             if (superm) {
                 description += " (Supermajority)";
-            }
-
-            if ("User" in fields) {
-                description += " (Reguarding User: " + fields["User"] + ")";
             }
 
             let faux_description = description.split("\n");
