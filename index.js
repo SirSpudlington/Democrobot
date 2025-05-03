@@ -536,29 +536,23 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
         } else if (interaction.customId.startsWith("vote_")) {
             process_vote(interaction);
-        } else if (interaction.customId === "action_of_power") {
-            let [period, _] = getPeriod();
-            if (period === "Voting") {
-                interaction.reply({ content: `You cannot perform a jurisdictional action during a voting period.`, ephemeral: true });
-                return;
-            } else if (period === "Application") {
-                interaction.reply({ content: `You cannot perform a jurisdictional action during the application period.`, ephemeral: true });
-                return;
-            }
+        } // else if (interaction.customId === "action_of_power") {
+        //     let [period, _] = getPeriod();
+        //     if (period === "Voting") {
+        //         interaction.reply({ content: `You cannot perform a jurisdictional action during a voting period.`, ephemeral: true });
+        //         return;
+        //     } else if (period === "Application") {
+        //         interaction.reply({ content: `You cannot perform a jurisdictional action during the application period.`, ephemeral: true });
+        //         return;
+        //     }
 
-            // Get users role
-            let user = await server.members.fetch(interaction.user.id);
-            let user_roles = user.roles.cache.map(role => role.id);
+        //     // Get users role
+        //     let user = await server.members.fetch(interaction.user.id);
+        //     let user_roles = user.roles.cache.map(role => role.id);
 
-            if (user_roles.includes(Roles.LeadAdmin)) {
-                interaction.reply({ content: "You are a Lead Admin. You cannot perform a jurisdictional action.", ephemeral: true });
-            } else if (user_roles.includes(Roles.President) || user_roles.includes(Roles.VicePresident)) {
-                interaction.reply({ content: "You are the President. You cannot perform a jurisdictional action.", ephemeral: true });
-            } else {
-                interaction.reply({ content: "You do not have a high enough rank to perform a jurisdictional action.", ephemeral: true });
-            }
+            
 
-        }
+        // }
     } else if (interaction.isStringSelectMenu()) {
         if (interaction.customId === "apply-menu") {
             let value = interaction.values[0]

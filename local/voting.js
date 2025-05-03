@@ -102,10 +102,15 @@ async function handle_interaction(interaction) {
 
             let faux_description = description.split("\n");
 
+            let toremove = []
+
             while (true) {
                 let modified = false;
                 for (let i = 0; i < faux_description.length; i++) {
                     let line = faux_description[i];
+                    if (line == "") {
+                        toremove.push(i)
+                    }
                     if (line.length > 40) {
                         faux_description[i] = line.substring(0, 40);
                         faux_description.splice(i + 1, 0, line.substring(40));
@@ -117,7 +122,11 @@ async function handle_interaction(interaction) {
                 }
             }
 
-            if (faux_description.length > 5) {
+            for (let i = toremove.length; i == 0; i--) {
+                faux_description.splice(i, 1)
+            }
+
+            if (faux_description.length > 4) {
                 faux_description = faux_description.slice(0, 5);
             }
 
