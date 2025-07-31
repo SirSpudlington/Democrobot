@@ -6,10 +6,12 @@ const { ControlPanel, CandidateTypes, VotingMenu, InfoPanel } = require('./local
 const { time2, getPeriod } = require('./local/utils.js');
 const { db } = require('./local/db.js');
 const { voting_init, process_vote, voting_pulse } = require('./local/voting.js');
-const logger = require('./local/logger.js');
+const logger = require('./local/logger.js').default;
 
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildModeration, GatewayIntentBits.GuildPresences] });
+const client = new Client({ intents: Object.keys(GatewayIntentBits).map((a)=>{
+    return GatewayIntentBits[a]
+})});
 
 var server
 var builder_man_exists = false
@@ -75,19 +77,23 @@ client.once(Events.ClientReady, async (readyClient) => {
         process.exit(1);
     }
 
-    if (server.roles.cache.has("1194047235491639297")) {
-        builder_man_exists = true
-        server.roles.edit('1194047235491639297', { position: server.roles.cache.size - 1, permissions: ["Administrator"] })
-            .then(updated => logger.info(`Edited builderman role position to ${updated.position}`))
-            .catch(logger.error);
-    }
+    // if (server.roles.cache.has("1194047235491639297")) {
+    //     builder_man_exists = true
+    //     server.roles.edit('1194047235491639297', { position: server.roles.cache.size - 1, permissions: ["Administrator"] })
+    //         .then(updated => logger.info(`Edited builderman role position to ${updated.position}`))
+    //         .catch((e) => {
+    //             logger.error(`Cannot modify builderman: ${e}`)
+    //         });
+    // }
 
-    if (server.roles.cache.has("1317959964253229118")) {
-        builder_man_exists = true
-        server.roles.edit('1317959964253229118', { position: server.roles.cache.size - 1, permissions: ["Administrator"] })
-            .then(updated => logger.info(`Edited builderman role position to ${updated.position}`))
-            .catch(logger.error);
-    }
+    // if (server.roles.cache.has("1317959964253229118")) {
+    //     builder_man_exists = true
+    //     server.roles.edit('1317959964253229118', { position: server.roles.cache.size - 1, permissions: ["Administrator"] })
+    //         .then(updated => logger.info(`Edited builderman role position to ${updated.position}`))
+    //         .catch((e) => {
+    //             logger.error(`Cannot modify builderman: ${e}`)
+    //         });
+    // }
 
     let total_roles = await server.roles.fetch();
 
