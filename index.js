@@ -77,31 +77,34 @@ client.once(Events.ClientReady, async (readyClient) => {
         process.exit(1);
     }
 
-    // if (server.roles.cache.has("1194047235491639297")) {
-    //     builder_man_exists = true
-    //     server.roles.edit('1194047235491639297', { position: server.roles.cache.size - 1, permissions: ["Administrator"] })
-    //         .then(updated => logger.info(`Edited builderman role position to ${updated.position}`))
-    //         .catch((e) => {
-    //             logger.error(`Cannot modify builderman: ${e}`)
-    //         });
-    // }
+    logger.info("Checking Democrobot Admin...")
+    if (!server.roles.cache.has(Roles.DemocrobotAdmin) || server.roles.cache.get(Roles.DemocrobotAdmin).position != server.roles.cache.size - 1) {
+        logger.error("Democrobot Admin does not exist, exiting...")
+        process.exit(1);
+    }
 
-    // if (server.roles.cache.has("1317959964253229118")) {
-    //     builder_man_exists = true
-    //     server.roles.edit('1317959964253229118', { position: server.roles.cache.size - 1, permissions: ["Administrator"] })
-    //         .then(updated => logger.info(`Edited builderman role position to ${updated.position}`))
-    //         .catch((e) => {
-    //             logger.error(`Cannot modify builderman: ${e}`)
-    //         });
-    // }
+    let bot = (await server.members.fetch()).get(client.user.id);
+
+    if (bot.roles.cache.get(Roles.DemocrobotAdmin) == undefined) {
+        logger.error("Democrobot dose not have Admin role, exiting...")
+        process.exit(1);
+    }
+
+    logger.info("Checking Builderman...")
+    if (!server.roles.cache.has(Roles.Builderman)) {
+        logger.error("Buildman does not exist, exiting...")
+        process.exit(1);
+    } else {
+        server.roles.edit(Roles.Builderman, { position: server.roles.cache.size - 2, permissions: ["Administrator"] })
+            .then(updated => logger.info(`Edited builderman role position to ${updated.position}`))
+            .catch((e) => {
+                logger.error(`Cannot modify builderman: ${e}`)
+            });
+    }
 
     let total_roles = await server.roles.fetch();
 
-    let pos = total_roles.size - 1
-
-    if (builder_man_exists) {
-        pos = pos - 1
-    }
+    let pos = total_roles.size - 3
 
     logger.info("Startup checks complete.")
 
@@ -218,25 +221,9 @@ client.once(Events.ClientReady, async (readyClient) => {
 });
 
 async function updateRoles(pos, server) {
-    // Update Lead Admin Role
-
-    let updatev = BackupRoles.LeadAdmin
-    updatev.position = pos - 2
-    updatev.reason = "Update Protected Role"
-    updatev.permissions = new BitField(updatev.permissions)
-    await server.roles.edit(Roles.LeadAdmin, updatev)
-
-    // Update Voting Commitee Role
-
-    updatev = BackupRoles.VotingCommitee
-    updatev.position = pos - 3
-    updatev.reason = "Update Protected Role"
-    updatev.permissions = new BitField(updatev.permissions)
-    await server.roles.edit(Roles.VotingCommitee, updatev)
-
     // Update President Role
 
-    updatev = BackupRoles.President
+    let updatev = BackupRoles.President
     updatev.position = pos
     updatev.reason = "Update Protected Role"
     updatev.permissions = new BitField(updatev.permissions)
@@ -249,6 +236,22 @@ async function updateRoles(pos, server) {
     updatev.reason = "Update Protected Role"
     updatev.permissions = new BitField(updatev.permissions)
     await server.roles.edit(Roles.VicePresident, updatev)
+
+    // Update Lead Admin Role
+
+    updatev = BackupRoles.LeadAdmin
+    updatev.position = pos - 2
+    updatev.reason = "Update Protected Role"
+    updatev.permissions = new BitField(updatev.permissions)
+    await server.roles.edit(Roles.LeadAdmin, updatev)
+
+    // Update Voting Commitee Role
+
+    updatev = BackupRoles.VotingCommitee
+    updatev.position = pos - 3
+    updatev.reason = "Update Protected Role"
+    updatev.permissions = new BitField(updatev.permissions)
+    await server.roles.edit(Roles.VotingCommitee, updatev)
 
     // Update Executive Role
 
@@ -336,13 +339,9 @@ async function roleEvent(event) {
 
         let total_roles = await server.roles.fetch();
 
-        let pos = total_roles.size - 1
+        let pos = total_roles.size - 3
 
         let newest_role = total_roles.find(x => x.id == event.id);
-
-        if (builder_man_exists) {
-            pos = pos - 1
-        }
 
         let validpos = true;
         let validperm = true;
@@ -412,11 +411,17 @@ async function roleEvent(event) {
             content: `A protected role "${event.name}" has been illegally updated by ${name}. Resetting functional roles.`,
         })
 
+        
+        role_updating = true;
         await updateRoles(pos, server);
+        role_updating = false;
 
         // Demote User
 
         try {
+            if (eventLog == undefined) {
+                return;
+            }
             let user = await server.members.fetch(eventLog.executor.id)
             await user.roles.remove(Roles.LeadAdmin)
             await user.roles.remove(Roles.VotingCommitee)
@@ -464,13 +469,13 @@ async function verifyVote(interaction, vote_type) {
     }
 
     if (indb != undefined) {
-        interaction.reply({ content: "You have already voted. Please wait for the next voting period.", ephemeral: true });
+        interaction.reply({ content: "You have already voted. Please wait for the next voting period.", flags: "Ephemeral" });
         return false;
     }
 
     let period = getPeriod();
     if (period[0] != "Voting") {
-        interaction.reply({ content: "You cannot vote now, please wait until the voting period.", ephemeral: true });
+        interaction.reply({ content: "You cannot vote now, please wait until the voting period.", flags: "Ephemeral" });
         return false;
     }
 
@@ -482,21 +487,21 @@ client.on(Events.InteractionCreate, async (interaction) => {
         if (interaction.customId === "apply") {
             let [period, time_until_new] = getPeriod();
             if (period === "Voting") {
-                interaction.reply({ content: `You cannot apply to be a candidate during a voting period.`, ephemeral: true });
+                interaction.reply({ content: `You cannot apply to be a candidate during a voting period.`, flags: "Ephemeral" });
                 return;
             } else if (period === "Candidate") {
-                interaction.reply({ content: `You cannot apply to be a candidate during a term.`, ephemeral: true });
+                interaction.reply({ content: `You cannot apply to be a candidate during a term.`, flags: "Ephemeral" });
                 return;
             }
 
-            interaction.reply({ content: "Please fill in the form, to become a candidate. You can only apply to one role and once picked, you cannot change it until the next voting period.", components: [CandidateTypes], ephemeral: true });
+            interaction.reply({ content: "Please fill in the form, to become a candidate. You can only apply to one role and once picked, you cannot change it until the next voting period.", components: [CandidateTypes], flags: "Ephemeral" });
         } else if (interaction.customId === "vote") {
             let [period, time_until_new] = getPeriod();
             if (period === "Application") {
-                interaction.reply({ content: `You cannot vote during the application period.`, ephemeral: true });
+                interaction.reply({ content: `You cannot vote during the application period.`, flags: "Ephemeral" });
                 return;
             } else if (period === "Candidate") {
-                interaction.reply({ content: `You cannot apply to be a candidate during a term.`, ephemeral: true });
+                interaction.reply({ content: `You cannot apply to be a candidate during a term.`, flags: "Ephemeral" });
                 return;
             }
 
@@ -538,17 +543,17 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
             let menu = VotingMenu(pres, lead, voco)
 
-            await interaction.reply({ content: "Please select a candidate to vote for.", ephemeral: true, embeds: [menu[0]], components: menu.slice(1) });
+            await interaction.reply({ content: "Please select a candidate to vote for.", flags: "Ephemeral", embeds: [menu[0]], components: menu.slice(1) });
 
         } else if (interaction.customId.startsWith("vote_")) {
             process_vote(interaction);
         } // else if (interaction.customId === "action_of_power") {
         //     let [period, _] = getPeriod();
         //     if (period === "Voting") {
-        //         interaction.reply({ content: `You cannot perform a jurisdictional action during a voting period.`, ephemeral: true });
+        //         interaction.reply({ content: `You cannot perform a jurisdictional action during a voting period.`, flags: "Ephemeral" });
         //         return;
         //     } else if (period === "Application") {
-        //         interaction.reply({ content: `You cannot perform a jurisdictional action during the application period.`, ephemeral: true });
+        //         interaction.reply({ content: `You cannot perform a jurisdictional action during the application period.`, flags: "Ephemeral" });
         //         return;
         //     }
 
@@ -565,10 +570,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
             let period, _ = getPeriod();
             if (period === "Voting") {
-                interaction.reply({ content: `You cannot apply to be a candidate during a voting period.`, ephemeral: true });
+                interaction.reply({ content: `You cannot apply to be a candidate during a voting period.`, flags: "Ephemeral" });
                 return;
             } else if (period === "Candidate") {
-                interaction.reply({ content: `You cannot apply to be a candidate during a term.`, ephemeral: true });
+                interaction.reply({ content: `You cannot apply to be a candidate during a term.`, flags: "Ephemeral" });
                 return;
             }
 
@@ -588,21 +593,21 @@ client.on(Events.InteractionCreate, async (interaction) => {
             }
 
             if (indb != undefined) {
-                interaction.reply({ content: "You have already applied to a role. Please wait for the next voting period.", ephemeral: true });
+                interaction.reply({ content: "You have already applied to a role. Please wait for the next voting period.", flags: "Ephemeral" });
                 return;
             }
 
             if (value === "votersCommitee") {
                 db.run("INSERT INTO candidates (user, role, votes) VALUES (?, ?, ?)", [interaction.user.id, "votersCommitee", 0]);
-                interaction.reply({ content: "You have successfully applied to the Voters Commitee. You will appear in the voting pool shortly.", ephemeral: true });
+                interaction.reply({ content: "You have successfully applied to the Voters Commitee. You will appear in the voting pool shortly.", flags: "Ephemeral" });
                 client.channels.cache.get(Channels.Announcements).send({ content: `<@${interaction.user.id}> has applied to be in the Voters Commitee.` });
             } else if (value === "leadAdmin") {
                 db.run("INSERT INTO candidates (user, role, votes) VALUES (?, ?, ?)", [interaction.user.id, "leadAdmin", 0]);
-                interaction.reply({ content: "You have successfully applied to the be the Lead Admin. You will appear in the voting pool shortly.", ephemeral: true });
+                interaction.reply({ content: "You have successfully applied to the be the Lead Admin. You will appear in the voting pool shortly.", flags: "Ephemeral" });
                 client.channels.cache.get(Channels.Announcements).send({ content: `<@${interaction.user.id}> has applied to be the Lead Admin.` });
             } else if (value === "president") {
                 db.run("INSERT INTO candidates (user, role, votes) VALUES (?, ?, ?)", [interaction.user.id, "president", 0]);
-                interaction.reply({ content: "You have successfully applied to the be the President. You will appear in the voting pool shortly.", ephemeral: true });
+                interaction.reply({ content: "You have successfully applied to the be the President. You will appear in the voting pool shortly.", flags: "Ephemeral" });
                 client.channels.cache.get(Channels.Announcements).send({ content: `<@${interaction.user.id}> has applied to be the President.` });
             }
 
@@ -611,19 +616,19 @@ client.on(Events.InteractionCreate, async (interaction) => {
             let value = interaction.values[0]
             db.run("INSERT INTO voted_pres (user) VALUES (?)", [interaction.user.id]);
             db.run("UPDATE candidates SET votes = votes + 1 WHERE user = ?", [value]);
-            interaction.reply({ content: "You have successfully voted for the President.", ephemeral: true });
+            interaction.reply({ content: "You have successfully voted for the President.", flags: "Ephemeral" });
         } else if (interaction.customId === "vote-menu-leadAdmin") {
             if (!await verifyVote(interaction, "lead")) { return; }
             let value = interaction.values[0]
             db.run("INSERT INTO voted_lead (user) VALUES (?)", [interaction.user.id]);
             db.run("UPDATE candidates SET votes = votes + 1 WHERE user = ?", [value]);
-            interaction.reply({ content: "You have successfully voted for the Lead Admin.", ephemeral: true });
+            interaction.reply({ content: "You have successfully voted for the Lead Admin.", flags: "Ephemeral" });
         } else if (interaction.customId === "vote-menu-votersCommitee") {
             if (!await verifyVote(interaction, "vote")) { return; }
             let value = interaction.values[0]
             db.run("INSERT INTO voted_vote (user) VALUES (?)", [interaction.user.id]);
             db.run("UPDATE candidates SET votes = votes + 1 WHERE user = ?", [value]);
-            interaction.reply({ content: "You have successfully voted for the Voters Commitee.", ephemeral: true });
+            interaction.reply({ content: "You have successfully voted for the Voters Commitee.", flags: "Ephemeral" });
         }
     }
 })

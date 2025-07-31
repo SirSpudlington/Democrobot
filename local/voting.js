@@ -33,13 +33,13 @@ async function handle_interaction(interaction) {
 
             let row = new ActionRowBuilder().addComponents(select_menu);
 
-            await interaction.reply({ content: 'Select a vote type', components: [row], ephemeral: true });
+            await interaction.reply({ content: 'Select a vote type', components: [row], flags: "Ephemeral" });
         }
     } else if (interaction.isStringSelectMenu()) {
         if (interaction.customId === 'vote_create_type') {
             let command = commands.find(command => command.name === interaction.values[0]);
             if (!command) {
-                await interaction.reply({ content: 'An error occured', ephemeral: true });
+                await interaction.reply({ content: 'An error occured', flags: "Ephemeral" });
                 return;
             } else {
                 let modal = new ModalBuilder()
@@ -229,7 +229,7 @@ async function handle_interaction(interaction) {
             fields["title"] = interaction.user.displayName + "'s vote"
 
             await db.run("INSERT INTO votes (name, fields, time, id) VALUES (?, ?, ?, ?)", [name, JSON.stringify(fields), new Date().getTime(), id]);
-            await interaction.reply({ content: 'Vote created', ephemeral: true });
+            await interaction.reply({ content: 'Vote created', flags: "Ephemeral" });
         }
     }
 }
@@ -284,7 +284,7 @@ async function process_vote(interaction) {
             vote.fields.cvotes.abstain++;
         }
     } else {
-        interaction.reply({ content: "You have already voted.", ephemeral: true });
+        interaction.reply({ content: "You have already voted.", flags: "Ephemeral" });
         return;
     }
 
@@ -403,7 +403,7 @@ async function process_vote(interaction) {
     await db.run("UPDATE votes SET fields = ? WHERE id = ?", [JSON.stringify(vote.fields), id]);
     await interaction.message.edit({ files: [{ attachment: outputBuffer, name: 'VoteStatus.png' }], components: [row], content: "A new vote has been created" });
 
-    interaction.reply({ content: 'Vote processed', ephemeral: true });
+    interaction.reply({ content: 'Vote processed', flags: "Ephemeral" });
 }
 
 async function voting_pulse() {
